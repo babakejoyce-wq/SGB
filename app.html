@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGB — Application · Université Excellence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ════════════════════════════════
+   TOKENS
+════════════════════════════════ */
+:root {
+  --bg:    #0B0F1A;
+  --bg2:   #111828;
+  --bg3:   #1A2236;
+  --bg4:   #222D42;
+  --ink:   #F0F4FF;
+  --ink2:  #B8C0D2;
+  --ink3:  #7B8599;
+  --blue:  #1A6BF5;
+  --blue2: #0D4CC7;
+  --sky:   rgba(26,107,245,.12);
+  --cyan:  #00C9A7;
+  --amber: #F5A623;
+  --red:   #E8453C;
+  --green: #34C759;
+  --bdr:   rgba(255,255,255,.08);
+  --bdr2:  rgba(255,255,255,.14);
+  --r:     10px;
+  --rl:    14px;
+  --shadow: 0 4px 24px rgba(0,0,0,.4);
+}
+
+/* ════════════════════════════════
+   RESET
+════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--ink);display:flex;flex-direction:column}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:var(--bg2)}
+::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:99px}
+::selection{background:var(--blue);color:#fff}
+button,input,select,textarea{font-family:inherit}
+a{text-decoration:none;color:inherit}
+
+/* ════════════════════════════════
+   LOGIN SCREEN
+════════════════════════════════ */
+#login-screen {
+  position:fixed;inset:0;z-index:999;
+  background:var(--bg);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .5s ease, transform .5s ease;
+}
+#login-screen.out{opacity:0;transform:scale(1.04);pointer-events:none}
+.login-bg {
+  position:absolute;inset:0;overflow:hidden;
+}
+.login-bg-orb {
+  position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none;
+}
+.lb1{width:600px;height:600px;background:rgba(26,107,245,.18);top:-200px;left:-200px}
+.lb2{width:500px;height:500px;background:rgba(0,201,167,.1);bottom:-150px;right:-100px}
+.lb3{width:300px;height:300px;background:rgba(26,107,245,.12);top:50%;left:50%;transform:translate(-50%,-50%)}
+.login-card {
+  position:relative;z-index:1;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--bdr2);
+  border-radius:20px;
+  padding:40px;
+  width:100%;max-width:420px;
+  backdrop-filter:blur(24px);
+  box-shadow:0 32px 80px rgba(0,0,0,.5);
+  animation:loginPop .6s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes loginPop{from{opacity:0;transform:scale(.9) translateY(20px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.login-logo{display:flex;align-items:center;gap:12px;margin-bottom:28px}
+.login-logo-icon{width:44px;height:44px;border-radius:12px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;box-shadow:0 0 24px rgba(26,107,245,.5)}
+.login-logo-txt{font-family:'Syne',sans-serif;font-size:20px;font-weight:800}
+.login-logo-sub{font-size:11px;color:var(--ink3);margin-top:1px}
+.login-h{font-size:24px;font-weight:700;margin-bottom:6px;font-family:'Syne',sans-serif}
+.login-sub{font-size:13px;color:var(--ink3);margin-bottom:24px}
+
+.role-pills{display:flex;gap:8px;margin-bottom:20px}
+.rp{flex:1;border:1px solid var(--bdr);border-radius:var(--r);padding:10px 8px;text-align:center;cursor:pointer;transition:all .2s;background:transparent;color:var(--ink3);font-size:12px;font-weight:500}
+.rp i{display:block;font-size:18px;margin-bottom:5px}
+.rp:hover{border-color:var(--blue);color:var(--blue)}
+.rp.active{border-color:var(--blue);background:rgba(26,107,245,.12);color:#7EB3FF;font-weight:600}
+
+.lf{margin-bottom:14px}
+.lf label{display:block;font-size:12px;font-weight:600;color:var(--ink3);margin-bottom:5px}
+.lf input{width:100%;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:var(--r);padding:10px 14px;font-size:13px;color:var(--ink);outline:none;transition:border-color .2s,box-shadow .2s}
+.lf input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,107,245,.18)}
+.btn-login{width:100%;padding:12px;border-radius:var(--r);background:var(--blue);color:#fff;border:none;font-size:14px;font-weight:700;cursor:pointer;box-shadow:0 0 28px rgba(26,107,245,.4);transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:4px}
+.btn-login:hover{background:var(--blue2);transform:translateY(-1px);box-shadow:0 4px 32px rgba(26,107,245,.55)}
+.btn-login:active{transform:scale(.98)}
+.login-footer-txt{text-align:center;font-size:12px;color:var(--ink3);margin-top:16px}
+.login-footer-txt a{color:var(--blue);cursor:pointer}
+
+/* ════════════════════════════════
+   APP LAYOUT
+════════════════════════════════ */
+#app{display:flex;flex:1;overflow:hidden;opacity:0;transition:opacity .5s ease}
+#app.visible{opacity:1}
+
+/* ════════════════════════════════
+   SIDEBAR
+════════════════════════════════ */
+#sidebar{
+  width:220px;flex-shrink:0;
+  background:var(--bg2);
+  border-right:1px solid var(--bdr);
+  display:flex;flex-direction:column;
+  overflow-y:auto;
+  transition:width .3s ease;
+}
+.sb-logo{padding:16px 18px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--bdr)}
+.sb-logo-icon{width:34px;height:34px;border-radius:9px;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:16px;color:#fff;box-shadow:0 0 16px rgba(26,107,245,.4);flex-shrink:0}
+.sb-logo-txt{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;line-height:1.2}
+.sb-logo-sub{font-size:10px;color:var(--ink3);margin-top:1px}
+nav.sb-nav{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:2px}
+.sb-section{font-size:9px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);padding:10px 8px 4px;margin-top:4px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--r);cursor:pointer;font-size:13px;font-weight:500;color:var(--ink3);border:none;background:none;width:100%;text-align:left;transition:all .2s;position:relative}
+.sb-item i{font-size:15px;width:18px;text-align:center;flex-shrink:0}
+.sb-item:hover{background:rgba(255,255,255,.05);color:var(--ink)}
+.sb-item.active{background:rgba(26,107,245,.15);color:#7EB3FF;font-weight:600}
+.sb-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);width:3px;height:18px;background:var(--blue);border-radius:0 99px 99px 0}
+.sb-badge{margin-left:auto;background:var(--red);color:#fff;font-size:9px;font-weight:700;padding:1px 6px;border-radius:99px;min-width:18px;text-align:center}
+.sb-footer{padding:12px;border-top:1px solid var(--bdr)}
+.sb-user{display:flex;align-items:center;gap:10px;padding:10px;border-radius:var(--r);cursor:pointer;transition:background .2s}
+.sb-user:hover{background:rgba(255,255,255,.05)}
+.sb-avatar{width:32px;height:32px;border-radius:50%;background:rgba(26,107,245,.2);color:#7EB3FF;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0}
+.sb-uname{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-urole{font-size:10px;color:var(--ink3)}
+
+/* ════════════════════════════════
+   MAIN AREA
+════════════════════════════════ */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
+.topbar{height:54px;background:var(--bg2);border-bottom:1px solid var(--bdr);display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0}
+.tb-title{font-size:15px;font-weight:700;flex:1}
+.tb-search{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.05);border:1px solid var(--bdr);border-radius:var(--r);padding:7px 14px;font-size:13px;color:var(--ink3);cursor:text;min-width:220px;transition:all .2s}
+.tb-search input{border:none;background:none;color:var(--ink);font-size:13px;outline:none;flex:1;min-width:0}
+.tb-search input::placeholder{color:var(--ink3)}
+.tb-search:focus-within{border-color:rgba(26,107,245,.4);background:rgba(26,107,245,.06)}
+.tb-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:var(--r);border:1px solid var(--bdr);background:none;cursor:pointer;color:var(--ink3);font-size:16px;transition:all .2s;position:relative}
+.tb-btn:hover{background:rgba(255,255,255,.06);color:var(--ink);border-color:var(--bdr2)}
+.tb-btn .ndot{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--red);border:1.5px solid var(--bg2)}
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 16px;border-radius:var(--r);font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--bdr);background:transparent;color:var(--ink);transition:all .2s}
+.btn:hover{background:rgba(255,255,255,.06);border-color:var(--bdr2)}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--blue);border-color:var(--blue);color:#fff;box-shadow:0 0 18px rgba(26,107,245,.3)}
+.btn-primary:hover{background:var(--blue2);border-color:var(--blue2);box-shadow:0 4px 24px rgba(26,107,245,.45)}
+.btn-danger{background:rgba(232,69,60,.15);border-color:rgba(232,69,60,.35);color:var(--red)}
+.btn-danger:hover{background:rgba(232,69,60,.25)}
+.btn-success{background:rgba(0,201,167,.15);border-color:rgba(0,201,167,.35);color:var(--cyan)}
+.btn-success:hover{background:rgba(0,201,167,.25)}
+.btn-sm{padding:5px 11px;font-size:11px}
+
+/* ════════════════════════════════
+   CONTENT PAGES
+════════════════════════════════ */
+.content-area{flex:1;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px}
+.page-view{display:none;flex-direction:column;gap:16px;animation:pgIn .3s ease}
+.page-view.active{display:flex}
+@keyframes pgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+
+/* ════════════════════════════════
+   STAT CARDS
+════════════════════════════════ */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.scard{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rl);padding:18px 20px;position:relative;overflow:hidden;cursor:default;transition:border-color .2s,transform .2s}
+.scard:hover{border-color:rgba(26,107,245,.3);transform:translateY(-2px)}
+.scard-icon{position:absolute;right:14px;top:14px;font-size:26px;opacity:.1}
+.scard-label{font-size:11px;font-weight:600;color:var(--ink3);display:flex;align-items:center;gap:6px;margin-bottom:10px}
+.scard-val{font-family:'Syne',sans-serif;font-size:30px;font-weight:800;line-height:1}
+.scard-trend{font-size:11px;color:var(--ink3);margin-top:6px}
+.scard-trend span{font-weight:600}
+.c-blue{color:#7EB3FF}.c-amber{color:var(--amber)}.c-red{color:var(--red)}.c-green{color:var(--cyan)}
+
+/* ════════════════════════════════
+   CARDS
+════════════════════════════════ */
+.card{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--rl);overflow:hidden}
+.card-head{display:flex;align-items:center;justify-content:space-between;padding:14px 18px;border-bottom:1px solid var(--bdr)}
+.card-head h2{font-size:14px;font-weight:700;display:flex;align-items:center;gap:8px}
+.card-body{padding:0}
+.card-pad{padding:18px}
+
+/* ════════════════════════════════
+   TABLE
+════════════════════════════════ */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl thead tr{background:rgba(255,255,255,.03)}
+.tbl th{padding:10px 16px;text-align:left;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);border-bottom:1px solid var(--bdr)}
+.tbl td{padding:12px 16px;border-bottom:1px solid var(--bdr);vertical-align:middle}
+.tbl tr:last-child td{border-bottom:none}
+.tbl tbody tr{transition:background .2s}
+.tbl tbody tr:hover{background:rgba(255,255,255,.03)}
+.tbl .actions{display:flex;gap:6px;justify-content:flex-end}
+
+/* ════════════════════════════════
+   BADGES
+════════════════════════════════ */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:99px;font-size:10px;font-weight:700;letter-spacing:.03em}
+.badge::before{content:'';width:5px;height:5px;border-radius:50%;flex-shrink:0}
+.b-ok   {background:rgba(0,201,167,.12);color:var(--cyan);border:1px solid rgba(0,201,167,.2)}
+.b-ok::before{background:var(--cyan)}
+.b-warn {background:rgba(245,166,35,.12);color:var(--amber);border:1px solid rgba(245,166,35,.2)}
+.b-warn::before{background:var(--amber)}
+.b-err  {background:rgba(232,69,60,.12);color:var(--red);border:1px solid rgba(232,69,60,.2)}
+.b-err::before{background:var(--red)}
+.b-info {background:rgba(26,107,245,.12);color:#7EB3FF;border:1px solid rgba(26,107,245,.2)}
+.b-info::before{background:#7EB3FF}
+.b-pur  {background:rgba(151,117,250,.12);color:#B49EFB;border:1px solid rgba(151,117,250,.2)}
+.b-pur::before{background:#B49EFB}
+.badge.sm{font-size:9px;padding:2px 8px}
+
+/* ════════════════════════════════
+   AVATAR
+════════════════════════════════ */
+.av{width:30px;height:30px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;vertical-align:middle;margin-right:8px}
+
+/* ════════════════════════════════
+   FORM
+════════════════════════════════ */
+.fg{display:flex;flex-direction:column;gap:5px}
+.fg label{font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.04em;text-transform:uppercase}
+.fg input,.fg select,.fg textarea{background:rgba(255,255,255,.05);border:1px solid var(--bdr);border-radius:var(--r);padding:9px 13px;font-size:13px;color:var(--ink);outline:none;transition:all .2s;width:100%}
+.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:rgba(26,107,245,.5);background:rgba(26,107,245,.06);box-shadow:0 0 0 3px rgba(26,107,245,.12)}
+.fg select option{background:var(--bg3);color:var(--ink)}
+.fg input[readonly]{opacity:.6;cursor:default}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:18px}
+.form-grid .full{grid-column:1/-1}
+.form-actions{padding:14px 18px;border-top:1px solid var(--bdr);display:flex;gap:8px;justify-content:flex-end;align-items:center}
+
+/* ════════════════════════════════
+   GAUGE
+════════════════════════════════ */
+.gauge{height:5px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden;margin-top:5px}
+.gauge-fill{height:100%;border-radius:99px;transition:width .9s cubic-bezier(.4,0,.2,1)}
+
+/* ════════════════════════════════
+   QUICK ACTIONS
+════════════════════════════════ */
+.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.qa{display:flex;flex-direction:column;align-items:center;gap:8px;padding:18px 10px;border-radius:var(--rl);border:1px solid var(--bdr);background:var(--bg2);cursor:pointer;font-size:12px;font-weight:600;color:var(--ink3);transition:all .2s}
+.qa i{font-size:24px;transition:transform .2s}
+.qa:hover{border-color:rgba(26,107,245,.35);background:rgba(26,107,245,.07);color:var(--ink);transform:translateY(-2px)}
+.qa:hover i{transform:scale(1.15)}
+.qa:active{transform:scale(.97)}
+.qa.qa-blue i{color:#7EB3FF}
+.qa.qa-green i{color:var(--cyan)}
+.qa.qa-amber i{color:var(--amber)}
+.qa.qa-pur i{color:#B49EFB}
+
+/* ════════════════════════════════
+   PENALTY CALC
+════════════════════════════════ */
+.pen-result{border-radius:var(--r);padding:14px;font-size:13px;display:none}
+.pen-result.show{display:block}
+.pen-result-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.pen-result-row:last-child{border:none;font-weight:700;font-size:15px;padding-top:10px}
+
+/* ════════════════════════════════
+   ALERT ITEMS
+════════════════════════════════ */
+.alert-item{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--bdr);transition:background .2s}
+.alert-item:last-child{border-bottom:none}
+.alert-item:hover{background:rgba(255,255,255,.03)}
+.alert-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.alert-text{flex:1}
+.alert-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.alert-sub{font-size:11px;color:var(--ink3)}
+
+/* ════════════════════════════════
+   CHART BARS
+════════════════════════════════ */
+.mini-chart{display:flex;align-items:flex-end;gap:5px;height:60px}
+.mc-bar{flex:1;border-radius:4px 4px 0 0;background:rgba(26,107,245,.3);transition:background .2s,height .8s cubic-bezier(.4,0,.2,1);cursor:default;min-height:4px}
+.mc-bar:hover{background:var(--blue)}
+.mc-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--ink3);margin-top:6px}
+
+/* ════════════════════════════════
+   NOTIF DROPDOWN
+════════════════════════════════ */
+.notif-dropdown{position:absolute;top:54px;right:20px;width:320px;background:var(--bg3);border:1px solid var(--bdr2);border-radius:var(--rl);box-shadow:var(--shadow);z-index:200;display:none;overflow:hidden;animation:pgIn .2s ease}
+.notif-dropdown.show{display:block}
+.nd-head{padding:12px 16px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between}
+.nd-head h3{font-size:14px;font-weight:700}
+.nd-item{display:flex;gap:10px;padding:10px 16px;border-bottom:1px solid var(--bdr);cursor:pointer;transition:background .2s}
+.nd-item:last-child{border:none}
+.nd-item:hover{background:rgba(255,255,255,.04)}
+.nd-item.unread{background:rgba(26,107,245,.04)}
+.nd-ico{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.nd-txt{flex:1;font-size:12px}
+.nd-title{font-weight:600;margin-bottom:2px}
+.nd-time{font-size:10px;color:var(--ink3)}
+.nd-dot{width:6px;height:6px;border-radius:50%;background:var(--blue);flex-shrink:0;margin-top:4px}
+
+/* ════════════════════════════════
+   TOAST
+════════════════════════════════ */
+#toast-container{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.toast{background:var(--bg3);border:1px solid var(--bdr2);border-radius:var(--rl);padding:14px 18px;font-size:13px;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow);min-width:260px;animation:toastIn .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none}
+.toast.out{animation:toastOut .3s ease forwards}
+@keyframes toastIn{from{opacity:0;transform:translateY(16px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes toastOut{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(8px)}}
+.toast i{font-size:18px}
+.toast.success i{color:var(--cyan)}.toast.error i{color:var(--red)}.toast.warn i{color:var(--amber)}
+
+/* ════════════════════════════════
+   SEARCH BAR
+════════════════════════════════ */
+.search-bar{display:flex;align-items:center;gap:8px;padding:14px 18px;border-bottom:1px solid var(--bdr)}
+.search-bar i{color:var(--ink3)}
+.search-bar input{flex:1;background:none;border:none;font-size:13px;color:var(--ink);outline:none}
+.search-bar input::placeholder{color:var(--ink3)}
+.search-bar select{background:rgba(255,255,255,.05);border:1px solid var(--bdr);border-radius:var(--r);padding:6px 10px;font-size:12px;color:var(--ink);outline:none;cursor:pointer}
+
+/* ════════════════════════════════
+   RESERVATION CARD
+════════════════════════════════ */
+.res-item{display:flex;align-items:center;gap:12px;padding:12px 18px;border-bottom:1px solid var(--bdr);transition:background .2s}
+.res-item:last-child{border-bottom:none}
+.res-item:hover{background:rgba(255,255,255,.03)}
+.res-book-icon{width:38px;height:38px;border-radius:10px;background:rgba(26,107,245,.12);color:#7EB3FF;display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
+
+/* ════════════════════════════════
+   PROFILE PAGE
+════════════════════════════════ */
+.profile-header{display:flex;align-items:center;gap:20px;padding:24px;border-bottom:1px solid var(--bdr)}
+.profile-av-big{width:64px;height:64px;border-radius:50%;background:rgba(26,107,245,.2);color:#7EB3FF;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700;font-family:'Syne',sans-serif;flex-shrink:0;border:2px solid rgba(26,107,245,.4)}
+.profile-name{font-family:'Syne',sans-serif;font-size:20px;font-weight:800}
+.profile-role{font-size:13px;color:var(--ink3);margin-top:4px}
+
+/* ════════════════════════════════
+   SCROLLABLE INNER
+════════════════════════════════ */
+.scrollable-inner{overflow-y:auto;max-height:280px}
+.scrollable-inner::-webkit-scrollbar{width:3px}
+.scrollable-inner::-webkit-scrollbar-thumb{background:var(--bg4)}
+
+/* Settings */
+.settings-row{display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--bdr)}
+.settings-row:last-child{border:none}
+.settings-label{font-size:13px;font-weight:600}
+.settings-sub{font-size:11px;color:var(--ink3);margin-top:2px}
+.toggle{width:40px;height:22px;border-radius:99px;border:none;cursor:pointer;position:relative;transition:background .2s;flex-shrink:0}
+.toggle.on{background:var(--blue)}.toggle.off{background:rgba(255,255,255,.15)}
+.toggle::after{content:'';position:absolute;width:16px;height:16px;border-radius:50%;background:#fff;top:3px;transition:left .2s;box-shadow:0 1px 4px rgba(0,0,0,.3)}
+.toggle.on::after{left:21px}.toggle.off::after{left:3px}
+
+/* ════════════════════════════════
+   RESPONSIVE
+════════════════════════════════ */
+@media(max-width:768px){
+  #sidebar{display:none}
+  .stats-row{grid-template-columns:1fr 1fr}
+  .qa-grid{grid-template-columns:repeat(2,1fr)}
+  .form-grid{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms !important;transition-duration:.01ms !important}}
+</style>
+</head>
+<body>
+
+<!-- ═══════ LOGIN ═══════ -->
+<div id="login-screen">
+  <div class="login-bg">
+    <div class="login-bg-orb lb1"></div>
+    <div class="login-bg-orb lb2"></div>
+    <div class="login-bg-orb lb3"></div>
+  </div>
+  <div class="login-card">
+    <div class="login-logo">
+      <div class="login-logo-icon"><i class="fa-solid fa-books"></i></div>
+      <div>
+        <div class="login-logo-txt">SGB</div>
+        <div class="login-logo-sub">Université Excellence</div>
+      </div>
+    </div>
+    <p class="login-h">Bon retour 👋</p>
+    <p class="login-sub">Connectez-vous pour accéder à votre espace.</p>
+    <div style="margin-bottom:18px">
+      <p style="font-size:11px;font-weight:700;color:var(--ink3);letter-spacing:.06em;text-transform:uppercase;margin-bottom:8px">Profil</p>
+      <div class="role-pills">
+        <button class="rp active" onclick="selRole(this,'Bibliothécaire')"><i class="fa-solid fa-id-badge"></i>Bibliothécaire</button>
+        <button class="rp" onclick="selRole(this,'Administrateur')"><i class="fa-solid fa-shield-halved"></i>Administrateur</button>
+        <button class="rp" onclick="selRole(this,'Étudiant')"><i class="fa-solid fa-user-graduate"></i>Étudiant</button>
+      </div>
+    </div>
+    <div class="lf"><label>Identifiant</label><input type="text" id="l-id" value="marie.dupont" placeholder="Votre identifiant"></div>
+    <div class="lf"><label>Mot de passe</label><input type="password" id="l-pw" value="••••••••" placeholder="••••••••"></div>
+    <button class="btn-login" onclick="doLogin()"><i class="fa-solid fa-arrow-right-to-bracket"></i> Accéder à l'application</button>
+    <p class="login-footer-txt"><a>Mot de passe oublié</a> · <a href="index.html">← Accueil</a></p>
+  </div>
+</div>
+
+<!-- ═══════ APP ═══════ -->
+<div id="app">
+
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-icon"><i class="fa-solid fa-books"></i></div>
+      <div><div class="sb-logo-txt">SGB</div><div class="sb-logo-sub">Bibliothèque</div></div>
+    </div>
+    <nav class="sb-nav">
+      <div class="sb-section">Principal</div>
+      <button class="sb-item active" onclick="goPage('dashboard',this)"><i class="fa-solid fa-chart-pie"></i>Tableau de bord</button>
+      <button class="sb-item" onclick="goPage('emprunts',this)"><i class="fa-solid fa-book-open-reader"></i>Emprunts<span class="sb-badge">47</span></button>
+      <button class="sb-item" onclick="goPage('retours',this)"><i class="fa-solid fa-rotate-left"></i>Retours</button>
+      <div class="sb-section">Catalogue</div>
+      <button class="sb-item" onclick="goPage('catalogue',this)"><i class="fa-solid fa-books"></i>Livres</button>
+      <button class="sb-item" onclick="goPage('membres',this)"><i class="fa-solid fa-users"></i>Membres</button>
+      <button class="sb-item" onclick="goPage('reservations',this)"><i class="fa-solid fa-bookmark"></i>Réservations<span class="sb-badge">5</span></button>
+      <div class="sb-section">Gestion</div>
+      <button class="sb-item" onclick="goPage('penalites',this)"><i class="fa-solid fa-circle-dollar-to-slot"></i>Pénalités<span class="sb-badge" style="background:var(--amber);color:#000">12</span></button>
+      <button class="sb-item" onclick="goPage('statistiques',this)"><i class="fa-solid fa-chart-bar"></i>Statistiques</button>
+      <button class="sb-item" onclick="goPage('alertes',this)"><i class="fa-solid fa-bell"></i>Alertes<span class="sb-badge">12</span></button>
+      <div class="sb-section">Compte</div>
+      <button class="sb-item" onclick="goPage('profil',this)"><i class="fa-solid fa-user-circle"></i>Mon profil</button>
+      <button class="sb-item" onclick="goPage('parametres',this)"><i class="fa-solid fa-gear"></i>Paramètres</button>
+    </nav>
+    <div class="sb-footer">
+      <div class="sb-user" onclick="doLogout()">
+        <div class="sb-avatar" id="sb-av">MD</div>
+        <div style="flex:1;min-width:0"><div class="sb-uname" id="sb-name">Marie Dupont</div><div class="sb-urole" id="sb-role">Bibliothécaire</div></div>
+        <i class="fa-solid fa-arrow-right-from-bracket" style="font-size:13px;color:var(--ink3)"></i>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div id="main">
+    <div class="topbar">
+      <span class="tb-title" id="page-title">Tableau de bord</span>
+      <div class="tb-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Rechercher livre, membre, ISBN…" id="global-search" oninput="globalSearch(this.value)"></div>
+      <button class="tb-btn" onclick="toggleNotif()" title="Notifications"><i class="fa-solid fa-bell"></i><span class="ndot"></span></button>
+      <button class="tb-btn" onclick="goPage('profil',null)" title="Profil"><i class="fa-solid fa-user-circle"></i></button>
+      <button class="btn btn-primary" onclick="goPage('emprunts',null)" style="flex-shrink:0"><i class="fa-solid fa-plus"></i> Nouvel emprunt</button>
+    </div>
+
+    <!-- Notif dropdown -->
+    <div class="notif-dropdown" id="notif-dropdown">
+      <div class="nd-head"><h3>Notifications</h3><button class="btn btn-sm" onclick="markAllRead()">Tout marquer lu</button></div>
+      <div id="notif-list"></div>
+    </div>
+
+    <div class="content-area">
+
+      <!-- ─── DASHBOARD ─── -->
+      <div class="page-view active" id="p-dashboard">
+        <div class="stats-row">
+          <div class="scard"><i class="fa-solid fa-books scard-icon"></i><div class="scard-label"><i class="fa-solid fa-books" style="color:#7EB3FF"></i>Livres en stock</div><div class="scard-val c-blue" id="ds-stock">342</div><div class="scard-trend"><span style="color:var(--cyan)">+8</span> ce mois</div></div>
+          <div class="scard"><i class="fa-solid fa-book-open scard-icon"></i><div class="scard-label"><i class="fa-solid fa-book-open" style="color:var(--amber)"></i>Emprunts actifs</div><div class="scard-val c-amber" id="ds-emp">47</div><div class="scard-trend"><span style="color:var(--ink3)">3</span> nouvelles demandes</div></div>
+          <div class="scard"><i class="fa-solid fa-triangle-exclamation scard-icon"></i><div class="scard-label"><i class="fa-solid fa-triangle-exclamation" style="color:var(--red)"></i>En retard</div><div class="scard-val c-red" id="ds-ret">12</div><div class="scard-trend"><span style="color:var(--red)">+2</span> depuis hier</div></div>
+          <div class="scard"><i class="fa-solid fa-rotate-left scard-icon"></i><div class="scard-label"><i class="fa-solid fa-rotate-left" style="color:var(--cyan)"></i>Retours aujourd'hui</div><div class="scard-val c-green" id="ds-rtd">8</div><div class="scard-trend">Objectif : <span>10</span></div></div>
+        </div>
+
+        <div class="qa-grid">
+          <div class="qa qa-blue" onclick="goPage('emprunts',null)"><i class="fa-solid fa-book-open-reader"></i>Enregistrer un emprunt</div>
+          <div class="qa qa-green" onclick="goPage('retours',null)"><i class="fa-solid fa-rotate-left"></i>Enregistrer un retour</div>
+          <div class="qa qa-amber" onclick="goPage('penalites',null)"><i class="fa-solid fa-circle-dollar-to-slot"></i>Gérer les pénalités</div>
+          <div class="qa qa-pur" onclick="goPage('catalogue',null)"><i class="fa-solid fa-magnifying-glass"></i>Rechercher un livre</div>
+        </div>
+
+        <div style="display:grid;grid-template-columns:2fr 1fr;gap:16px">
+          <div class="card">
+            <div class="card-head">
+              <h2><i class="fa-solid fa-clock-rotate-left" style="color:#7EB3FF"></i>Derniers emprunts</h2>
+              <button class="btn btn-sm" onclick="goPage('emprunts',null)">Voir tout <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+            <table class="tbl" id="dash-table">
+              <thead><tr><th>Membre</th><th>Livre</th><th>Retour prévu</th><th>Statut</th></tr></thead>
+              <tbody id="dash-tbody"></tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2><i class="fa-solid fa-chart-column" style="color:var(--blue)"></i>Activité (7j)</h2></div>
+            <div class="card-pad">
+              <div class="mini-chart" id="mini-chart"></div>
+              <div class="mc-labels" id="mc-labels"></div>
+            </div>
+            <div class="card-head" style="margin-top:8px;border-top:1px solid var(--bdr)"><h2><i class="fa-solid fa-fire" style="color:var(--amber)"></i>Top livres</h2></div>
+            <div style="padding:14px 18px;display:flex;flex-direction:column;gap:10px" id="top-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ─── EMPRUNTS ─── -->
+      <div class="page-view" id="p-emprunts">
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-book-open-reader" style="color:#7EB3FF"></i>Nouvel emprunt</h2></div>
+          <div class="form-grid">
+            <div class="fg"><label>N° étudiant *</label><input id="e-num" placeholder="ex. ETU-2025-0042" oninput="autoMember('e-num','e-nom')"></div>
+            <div class="fg"><label>Nom du membre</label><input id="e-nom" readonly placeholder="Auto-rempli"></div>
+            <div class="fg"><label>ISBN / Code barre *</label><input id="e-isbn" placeholder="978-2-…" oninput="autoBook('e-isbn','e-titre')"></div>
+            <div class="fg"><label>Titre du livre</label><input id="e-titre" readonly placeholder="Auto-rempli"></div>
+            <div class="fg"><label>Date d'emprunt</label><input type="date" id="e-d1" value="2025-06-10"></div>
+            <div class="fg"><label>Date retour prévue</label><input type="date" id="e-d2" value="2025-06-24"></div>
+            <div class="fg full"><label>Profil emprunteur</label>
+              <select><option>Étudiant — 14 jours</option><option>Enseignant — 30 jours</option><option>Administration — 7 jours</option></select>
+            </div>
+          </div>
+          <div class="form-actions">
+            <button class="btn" onclick="resetEmp()"><i class="fa-solid fa-xmark"></i>Annuler</button>
+            <button class="btn btn-primary" onclick="validerEmprunt()"><i class="fa-solid fa-check"></i>Valider l'emprunt</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-list-check" style="color:#7EB3FF"></i>Emprunts en cours</h2><span class="badge b-info">47 actifs</span></div>
+          <div class="search-bar"><i class="fa-solid fa-magnifying-glass"></i><input placeholder="Filtrer…" oninput="filterEmp(this.value)"><select onchange="filterEmpStatus(this.value)"><option value="">Tous statuts</option><option>OK</option><option>Bientôt</option><option>Retard</option></select></div>
+          <table class="tbl"><thead><tr><th>Membre</th><th>Livre</th><th>Filière</th><th>Date retour</th><th>Statut</th><th></th></tr></thead><tbody id="emp-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- ─── RETOURS ─── -->
+      <div class="page-view" id="p-retours">
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-rotate-left" style="color:var(--cyan)"></i>Enregistrer un retour</h2></div>
+          <div class="form-grid">
+            <div class="fg"><label>N° étudiant *</label><input id="r-num" placeholder="ETU-2025-…" oninput="autoMember('r-num','r-nom');checkRetard()"></div>
+            <div class="fg"><label>Nom</label><input id="r-nom" readonly placeholder="Auto-rempli"></div>
+            <div class="fg"><label>ISBN *</label><input id="r-isbn" placeholder="978-2-…"></div>
+            <div class="fg"><label>Date de retour</label><input type="date" id="r-date" value="2025-06-10" oninput="checkRetard()"></div>
+            <div class="fg full" id="retard-box"></div>
+          </div>
+          <div class="form-actions">
+            <button class="btn"><i class="fa-solid fa-xmark"></i>Annuler</button>
+            <button class="btn btn-success" onclick="validerRetour()"><i class="fa-solid fa-check"></i>Valider le retour</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-calendar-check" style="color:var(--cyan)"></i>Retours du jour</h2><span class="badge b-ok">8 retours</span></div>
+          <table class="tbl"><thead><tr><th>Heure</th><th>Membre</th><th>Livre</th><th>Retard</th><th>Pénalité</th></tr></thead>
+          <tbody id="ret-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- ─── CATALOGUE ─── -->
+      <div class="page-view" id="p-catalogue">
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-books" style="color:#B49EFB"></i>Catalogue des livres</h2>
+            <div style="display:flex;gap:8px"><button class="btn btn-sm btn-primary" onclick="showAddBook()"><i class="fa-solid fa-plus"></i>Ajouter un livre</button></div>
+          </div>
+          <div class="search-bar">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input id="cat-q" placeholder="Titre, auteur, ISBN, mot-clé…" oninput="filterCat()">
+            <select id="cat-cat" onchange="filterCat()"><option value="">Toutes catégories</option><option>Informatique</option><option>Réseaux</option><option>BDD</option><option>Mathématiques</option><option>Systèmes</option><option>Génie logiciel</option></select>
+            <select id="cat-dispo" onchange="filterCat()"><option value="">Tout statut</option><option value="1">Disponible</option><option value="0">Emprunté</option></select>
+          </div>
+          <table class="tbl"><thead><tr><th>ISBN</th><th>Titre</th><th>Auteur</th><th>Catégorie</th><th>Stock</th><th>Statut</th><th></th></tr></thead>
+          <tbody id="cat-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- ─── MEMBRES ─── -->
+      <div class="page-view" id="p-membres">
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-users" style="color:var(--cyan)"></i>Membres</h2>
+            <button class="btn btn-sm btn-primary"><i class="fa-solid fa-plus"></i>Nouveau membre</button>
+          </div>
+          <div class="search-bar"><i class="fa-solid fa-magnifying-glass"></i><input placeholder="Nom, N°, filière…" oninput="filterMem(this.value)"><select onchange="filterMemRole(this.value)"><option value="">Tous rôles</option><option>Étudiant</option><option>Enseignant</option><option>Administration</option></select></div>
+          <table class="tbl"><thead><tr><th>ID</th><th>Nom</th><th>Rôle</th><th>Filière</th><th>Emprunts actifs</th><th>Statut</th><th></th></tr></thead>
+          <tbody id="mem-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- ─── RESERVATIONS ─── -->
+      <div class="page-view" id="p-reservations">
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-bookmark-plus" style="color:#7EB3FF"></i>Nouvelle réservation</h2></div>
+          <div class="form-grid">
+            <div class="fg"><label>Membre *</label><input id="rv-m" placeholder="N° ou nom…"></div>
+            <div class="fg"><label>Livre *</label><input id="rv-b" placeholder="ISBN ou titre…" oninput="filterResBooks()"></div>
+            <div class="fg full" id="rv-results"></div>
+            <div class="fg full"><label>Commentaire</label><textarea rows="2" id="rv-note" placeholder="Optionnel…"></textarea></div>
+          </div>
+          <div class="form-actions"><button class="btn"><i class="fa-solid fa-xmark"></i>Annuler</button><button class="btn btn-primary" onclick="addRes()"><i class="fa-solid fa-bookmark"></i>Réserver</button></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-list-ol" style="color:#7EB3FF"></i>File d'attente</h2><span class="badge b-info" id="res-count-badge">5</span></div>
+          <div id="res-list"></div>
+        </div>
+      </div>
+
+      <!-- ─── PENALITES ─── -->
+      <div class="page-view" id="p-penalites">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="card">
+            <div class="card-head"><h2><i class="fa-solid fa-calculator" style="color:var(--amber)"></i>Calculateur</h2></div>
+            <div class="form-grid" style="grid-template-columns:1fr">
+              <div class="fg"><label>Date retour prévue</label><input type="date" id="pc-d1" value="2025-06-03" oninput="calcPen()"></div>
+              <div class="fg"><label>Date retour réel</label><input type="date" id="pc-d2" value="2025-06-10" oninput="calcPen()"></div>
+              <div class="fg"><label>Barème (FCFA/jour)</label><input type="number" id="pc-bar" value="100" oninput="calcPen()"></div>
+            </div>
+            <div style="padding:0 18px 18px"><div class="pen-result show" id="pen-result-box"></div></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2><i class="fa-solid fa-sliders" style="color:var(--blue)"></i>Barème configurable</h2></div>
+            <div style="padding:14px 18px;display:flex;flex-direction:column;gap:10px" id="bareme-rows"></div>
+            <div class="form-actions"><button class="btn btn-primary" onclick="saveBareme()"><i class="fa-solid fa-check"></i>Enregistrer</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-circle-dollar-to-slot" style="color:var(--amber)"></i>Pénalités en cours</h2>
+            <div style="display:flex;gap:8px;align-items:center">
+              <span class="badge b-err" id="total-pen-badge">Total : 0 FCFA</span>
+              <button class="btn btn-sm"><i class="fa-solid fa-download"></i>Export</button>
+            </div>
+          </div>
+          <table class="tbl"><thead><tr><th>Membre</th><th>Livre</th><th>Jours</th><th>Montant</th><th>Statut</th><th></th></tr></thead>
+          <tbody id="pen-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- ─── STATISTIQUES ─── -->
+      <div class="page-view" id="p-statistiques">
+        <div class="stats-row">
+          <div class="scard"><div class="scard-label">Emprunts juin</div><div class="scard-val c-blue">124</div><div class="scard-trend"><span style="color:var(--cyan)">+18%</span> vs mai</div></div>
+          <div class="scard"><div class="scard-label">Taux de retard</div><div class="scard-val c-amber">14%</div><div class="scard-trend">Objectif <span>&lt;10%</span></div></div>
+          <div class="scard"><div class="scard-label">Membres actifs</div><div class="scard-val c-green">89</div><div class="scard-trend">sur <span>312</span> inscrits</div></div>
+          <div class="scard"><div class="scard-label">Pénalités (FCFA)</div><div class="scard-val" style="font-size:22px">42 500</div><div class="scard-trend">ce mois</div></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <div class="card">
+            <div class="card-head"><h2><i class="fa-solid fa-chart-bar" style="color:var(--blue)"></i>Emprunts — 7 derniers jours</h2></div>
+            <div class="card-pad"><div class="mini-chart" id="stat-chart"></div><div class="mc-labels" id="stat-labels"></div></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h2><i class="fa-solid fa-trophy" style="color:var(--amber)"></i>Top livres empruntés</h2></div>
+            <div style="padding:16px 18px;display:flex;flex-direction:column;gap:12px" id="top-books-stat"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-graduation-cap" style="color:#B49EFB"></i>Activité par filière</h2><button class="btn btn-sm"><i class="fa-solid fa-file-pdf"></i>Export PDF</button></div>
+          <div style="padding:16px 18px;display:flex;flex-direction:column;gap:12px" id="filiere-stat"></div>
+        </div>
+      </div>
+
+      <!-- ─── ALERTES ─── -->
+      <div class="page-view" id="p-alertes">
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-triangle-exclamation" style="color:var(--red)"></i>Retards critiques</h2><span class="badge b-err">12 livres</span></div>
+          <div id="alerts-list"></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-clock" style="color:var(--amber)"></i>Retours prévus demain</h2></div>
+          <div id="warn-list"></div>
+        </div>
+      </div>
+
+      <!-- ─── PROFIL ─── -->
+      <div class="page-view" id="p-profil">
+        <div class="card">
+          <div class="profile-header">
+            <div class="profile-av-big" id="prof-av">MD</div>
+            <div>
+              <div class="profile-name" id="prof-name">Marie Dupont</div>
+              <div class="profile-role" id="prof-role">Bibliothécaire · Université Excellence</div>
+              <div style="display:flex;gap:6px;margin-top:10px">
+                <span class="badge b-ok sm">En ligne</span>
+                <span class="badge b-info sm">Bibliothécaire</span>
+              </div>
+            </div>
+            <button class="btn btn-sm" style="margin-left:auto"><i class="fa-solid fa-pen"></i>Modifier</button>
+          </div>
+          <div class="form-grid">
+            <div class="fg"><label>Prénom</label><input value="Marie"></div>
+            <div class="fg"><label>Nom</label><input value="Dupont"></div>
+            <div class="fg"><label>Email</label><input type="email" value="marie.dupont@univ-excellence.tg"></div>
+            <div class="fg"><label>Téléphone</label><input value="+228 90 00 00 00"></div>
+            <div class="fg"><label>Rôle</label><input readonly value="Bibliothécaire"></div>
+            <div class="fg"><label>Membre depuis</label><input readonly value="Septembre 2023"></div>
+          </div>
+          <div class="form-actions"><button class="btn btn-primary"><i class="fa-solid fa-check"></i>Sauvegarder les modifications</button></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-lock" style="color:var(--red)"></i>Sécurité</h2></div>
+          <div class="form-grid">
+            <div class="fg"><label>Mot de passe actuel</label><input type="password" placeholder="••••••••"></div>
+            <div class="fg"><label>Nouveau mot de passe</label><input type="password" placeholder="••••••••"></div>
+            <div class="fg full"><label>Confirmer le nouveau mot de passe</label><input type="password" placeholder="••••••••"></div>
+          </div>
+          <div class="form-actions"><button class="btn btn-primary"><i class="fa-solid fa-key"></i>Changer le mot de passe</button></div>
+        </div>
+      </div>
+
+      <!-- ─── PARAMETRES ─── -->
+      <div class="page-view" id="p-parametres">
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-gear" style="color:var(--blue)"></i>Configuration générale</h2></div>
+          <div class="form-grid">
+            <div class="fg"><label>Nom bibliothèque</label><input value="Bibliothèque Universitaire Excellence"></div>
+            <div class="fg"><label>Email contact</label><input type="email" value="biblio@univ-excellence.tg"></div>
+            <div class="fg"><label>Durée emprunt — Étudiant (jours)</label><input type="number" value="14"></div>
+            <div class="fg"><label>Durée emprunt — Enseignant (jours)</label><input type="number" value="30"></div>
+            <div class="fg"><label>Quota max emprunts simultanés</label><input type="number" value="3"></div>
+            <div class="fg"><label>Alerte retour J−…</label><input type="number" value="2"></div>
+          </div>
+          <div class="form-actions"><button class="btn btn-primary" onclick="toast('success','Paramètres enregistrés !')"><i class="fa-solid fa-check"></i>Enregistrer</button></div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2><i class="fa-solid fa-database" style="color:#B49EFB"></i>Système & Sauvegarde</h2></div>
+          <div style="padding:14px 18px">
+            <div class="settings-row"><div><div class="settings-label">Sauvegarde automatique quotidienne</div><div class="settings-sub">Dernière : aujourd'hui 03:00 · 30 copies conservées</div></div><button class="toggle on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button></div>
+            <div class="settings-row"><div><div class="settings-label">Alertes email automatiques</div><div class="settings-sub">Retards, retours à venir J−2</div></div><button class="toggle on" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button></div>
+            <div class="settings-row"><div><div class="settings-label">Mode maintenance</div><div class="settings-sub">Désactive l'accès étudiant temporairement</div></div><button class="toggle off" onclick="this.classList.toggle('on');this.classList.toggle('off')"></button></div>
+          </div>
+          <div class="form-actions"><button class="btn btn-danger" onclick="toast('warn','Sauvegarde en cours…')"><i class="fa-solid fa-database"></i>Lancer une sauvegarde</button></div>
+        </div>
+      </div>
+
+    </div><!-- end content-area -->
+  </div><!-- end main -->
+</div><!-- end app -->
+
+<div id="toast-container"></div>
+
+<script>
+/* ═══════ DATA ═══════ */
+const MEMBERS = [
+  {id:'ETU-2025-0042',name:'Koffi Amouzou',role:'Étudiant',fil:'INFO L3',emp:1,ok:true,av:'KA',avc:'rgba(26,107,245,.2)',avt:'#7EB3FF'},
+  {id:'ETU-2025-0007',name:'Ama Boateng',role:'Étudiant',fil:'SIG M1',emp:1,ok:true,av:'AB',avc:'rgba(245,166,35,.18)',avt:'#F5A623'},
+  {id:'ETU-2025-0012',name:'Mensah Cédric',role:'Étudiant',fil:'INFO L2',emp:2,ok:false,av:'MC',avc:'rgba(232,69,60,.18)',avt:'#E8453C'},
+  {id:'ENS-2025-004',name:'Dr. Afolabi K.',role:'Enseignant',fil:'Informatique',emp:0,ok:true,av:'AK',avc:'rgba(0,201,167,.18)',avt:'#00C9A7'},
+  {id:'ETU-2025-0055',name:'Fatima Traoré',role:'Étudiant',fil:'MATH L3',emp:1,ok:true,av:'FT',avc:'rgba(151,117,250,.18)',avt:'#B49EFB'},
+  {id:'ETU-2025-0033',name:'Yao Dossou',role:'Étudiant',fil:'INFO L1',emp:1,ok:true,av:'YD',avc:'rgba(26,107,245,.2)',avt:'#7EB3FF'},
+];
+const BOOKS = [
+  {isbn:'978-2-01',title:'Introduction à l\'algorithmique',author:'Cormen T.',cat:'Informatique',total:3,dispo:2},
+  {isbn:'978-2-07',title:'Réseaux & Télécommunications',author:'Tanenbaum A.',cat:'Réseaux',total:2,dispo:0},
+  {isbn:'978-2-10',title:'Base de données relationnelles',author:'Gardarin G.',cat:'BDD',total:4,dispo:3},
+  {isbn:'978-2-04',title:'Mathématiques pour l\'informatique',author:'Lovász L.',cat:'Mathématiques',total:2,dispo:2},
+  {isbn:'978-2-11',title:'Systèmes d\'exploitation modernes',author:'Tanenbaum A.',cat:'Systèmes',total:3,dispo:1},
+  {isbn:'978-2-09',title:'Génie logiciel en pratique',author:'Sommerville I.',cat:'Génie logiciel',total:2,dispo:2},
+];
+const EMPRUNTS = [
+  {mem:'Koffi Amouzou',av:'KA',avc:'rgba(26,107,245,.2)',avt:'#7EB3FF',book:'Introduction aux BDD',fil:'INFO',date:'15/06/2025',status:'ok'},
+  {mem:'Ama Boateng',av:'AB',avc:'rgba(245,166,35,.18)',avt:'#F5A623',book:'Algorithmique T.1',fil:'INFO',date:'11/06/2025',status:'warn'},
+  {mem:'Mensah Cédric',av:'MC',avc:'rgba(232,69,60,.18)',avt:'#E8453C',book:'Réseaux informatiques',fil:'INFO',date:'03/06/2025',status:'err'},
+  {mem:'Fatima Traoré',av:'FT',avc:'rgba(151,117,250,.18)',avt:'#B49EFB',book:'Mathématiques discrètes',fil:'MATH',date:'19/06/2025',status:'ok'},
+  {mem:'Yao Dossou',av:'YD',avc:'rgba(26,107,245,.2)',avt:'#7EB3FF',book:'Systèmes d\'exploitation',fil:'INFO',date:'17/06/2025',status:'ok'},
+];
+const PENALTIES = [
+  {mem:'Mensah Cédric',av:'MC',avc:'rgba(232,69,60,.18)',avt:'#E8453C',book:'Réseaux informatiques',jours:7,montant:700,paid:false},
+  {mem:'Adjoua Tanoh',av:'AT',avc:'rgba(245,166,35,.18)',avt:'#F5A623',book:'Algorithmique avancée',jours:5,montant:500,paid:false},
+  {mem:'Ibrahim Sall',av:'IS',avc:'rgba(151,117,250,.18)',avt:'#B49EFB',book:'Bases de données',jours:4,montant:400,paid:false},
+  {mem:'Mariama Bah',av:'MB',avc:'rgba(0,201,167,.18)',avt:'#00C9A7',book:'Java EE',jours:3,montant:300,paid:true},
+];
+let RESERVATIONS = [
+  {mem:'ETU-2025-0007',name:'Ama Boateng',book:'Réseaux & Télécommunications',date:'09/06/2025'},
+  {mem:'ETU-2025-0019',name:'Kofi Asante',book:'Algorithmique T.1',date:'08/06/2025'},
+  {mem:'ETU-2025-0033',name:'Bintou Diaw',book:'Java EE avancé',date:'07/06/2025'},
+  {mem:'ETU-2025-0044',name:'Samba Ndiaye',book:'Intelligence artificielle',date:'06/06/2025'},
+  {mem:'ETU-2025-0055',name:'Fatima Traoré',book:'Cryptographie',date:'05/06/2025'},
+];
+const NOTIFS = [
+  {ico:'fa-triangle-exclamation',bg:'rgba(232,69,60,.15)',tc:'#E8453C',title:'Retard critique',text:'Mensah Cédric — 7 jours de retard',time:'10 min',unread:true},
+  {ico:'fa-bookmark',bg:'rgba(26,107,245,.15)',tc:'#7EB3FF',title:'Nouvelle réservation',text:'Ama Boateng a réservé un livre',time:'32 min',unread:true},
+  {ico:'fa-clock',bg:'rgba(245,166,35,.15)',tc:'#F5A623',title:'Retour dans 2 jours',text:'3 membres — retour prévu 11/06',time:'1h',unread:true},
+  {ico:'fa-rotate-left',bg:'rgba(0,201,167,.15)',tc:'#00C9A7',title:'Retour effectué',text:'Sékou Diallo — Architecture réseaux',time:'2h',unread:false},
+];
+const BAREME = [{label:'1–3 jours',val:100},{label:'4–7 jours',val:150},{label:'8–14 jours',val:200},{label:'>14 jours',val:300}];
+let currentRole = 'Bibliothécaire';
+
+/* ═══════ LOGIN ═══════ */
+const ROLE_META = {
+  'Bibliothécaire':{av:'MD',name:'Marie Dupont'},
+  'Administrateur':{av:'AD',name:'Admin Système'},
+  'Étudiant':{av:'KA',name:'Koffi Amouzou'},
+};
+function selRole(el,r){
+  document.querySelectorAll('.rp').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active'); currentRole=r;
+}
+function doLogin(){
+  const meta=ROLE_META[currentRole]||ROLE_META['Bibliothécaire'];
+  document.getElementById('login-screen').classList.add('out');
+  document.getElementById('sb-av').textContent=meta.av;
+  document.getElementById('sb-name').textContent=meta.name;
+  document.getElementById('sb-role').textContent=currentRole;
+  document.getElementById('prof-av').textContent=meta.av;
+  document.getElementById('prof-name').textContent=meta.name;
+  document.getElementById('prof-role').textContent=currentRole+' · Université Excellence';
+  setTimeout(()=>{
+    document.getElementById('app').classList.add('visible');
+    initAllPages();
+  },300);
+}
+function doLogout(){
+  document.getElementById('app').classList.remove('visible');
+  document.getElementById('login-screen').classList.remove('out');
+  toast('warn','Déconnexion réussie');
+}
+
+/* ═══════ NAVIGATION ═══════ */
+const PAGE_TITLES = {
+  dashboard:'Tableau de bord',emprunts:'Emprunts',retours:'Retours',
+  catalogue:'Catalogue des livres',membres:'Membres',reservations:'Réservations',
+  penalites:'Pénalités',statistiques:'Statistiques',alertes:'Alertes',
+  profil:'Mon profil',parametres:'Paramètres'
+};
+function goPage(id,navEl){
+  document.querySelectorAll('.page-view').forEach(p=>p.classList.remove('active'));
+  const pg=document.getElementById('p-'+id);
+  if(pg)pg.classList.add('active');
+  document.querySelectorAll('.sb-item').forEach(n=>n.classList.remove('active'));
+  if(navEl) navEl.classList.add('active');
+  else {
+    document.querySelectorAll('.sb-item').forEach(n=>{
+      if(n.getAttribute('onclick')&&n.getAttribute('onclick').includes("'"+id+"'")) n.classList.add('active');
+    });
+  }
+  document.getElementById('page-title').textContent=PAGE_TITLES[id]||id;
+  document.getElementById('notif-dropdown').classList.remove('show');
+}
+
+/* ═══════ NOTIFICATIONS ═══════ */
+let notifOpen=false;
+function toggleNotif(){
+  notifOpen=!notifOpen;
+  document.getElementById('notif-dropdown').classList.toggle('show',notifOpen);
+  renderNotifs();
+}
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#notif-dropdown')&&!e.target.closest('[onclick="toggleNotif()"]'))
+  {notifOpen=false;document.getElementById('notif-dropdown').classList.remove('show');}
+});
+function renderNotifs(){
+  document.getElementById('notif-list').innerHTML=NOTIFS.map((n,i)=>`
+    <div class="nd-item ${n.unread?'unread':''}" onclick="readNotif(${i})">
+      <div class="nd-ico" style="background:${n.bg};color:${n.tc}"><i class="fa-solid ${n.ico}"></i></div>
+      <div class="nd-txt"><div class="nd-title">${n.title}</div><div style="color:var(--ink3)">${n.text}</div><div class="nd-time">Il y a ${n.time}</div></div>
+      ${n.unread?'<div class="nd-dot"></div>':''}
+    </div>`).join('');
+}
+function readNotif(i){NOTIFS[i].unread=false;renderNotifs();}
+function markAllRead(){NOTIFS.forEach(n=>n.unread=false);renderNotifs();}
+
+/* ═══════ TOAST ═══════ */
+function toast(type,msg){
+  const icons={success:'fa-check-circle',error:'fa-xmark-circle',warn:'fa-triangle-exclamation'};
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<i class="fa-solid ${icons[type]||icons.warn}"></i>${msg}`;
+  document.getElementById('toast-container').appendChild(t);
+  setTimeout(()=>{t.classList.add('out');setTimeout(()=>t.remove(),300)},3000);
+}
+
+/* ═══════ AUTO-FILL ═══════ */
+function autoMember(inId,outId){
+  const v=document.getElementById(inId).value.toLowerCase();
+  const m=MEMBERS.find(x=>x.id.toLowerCase().includes(v)||x.name.toLowerCase().includes(v));
+  document.getElementById(outId).value=m?m.name:'';
+}
+function autoBook(inId,outId){
+  const v=document.getElementById(inId).value.toLowerCase();
+  const b=BOOKS.find(x=>x.isbn.toLowerCase().includes(v)||x.title.toLowerCase().includes(v));
+  document.getElementById(outId).value=b?b.title:'';
+}
+
+/* ═══════ DASHBOARD ═══════ */
+function initDashboard(){
+  // table
+  document.getElementById('dash-tbody').innerHTML=EMPRUNTS.slice(0,5).map(e=>{
+    const badge=e.status==='ok'?'b-ok':'b-warn'===e.status?'b-warn':'b-err';
+    const lbl=e.status==='ok'?'OK':e.status==='warn'?'Bientôt':'Retard';
+    return `<tr><td><span class="av" style="background:${e.avc};color:${e.avt}">${e.av}</span>${e.mem}</td><td>${e.book}</td><td>${e.date}</td><td><span class="badge ${badge}">${lbl}</span></td></tr>`;
+  }).join('');
+  // mini chart
+  const days=['Lu','Ma','Me','Je','Ve','Sa','Di'],vals=[18,22,15,27,19,12,8];
+  const mx=Math.max(...vals);
+  document.getElementById('mini-chart').innerHTML=vals.map((v,i)=>`<div class="mc-bar" style="height:${Math.round(v/mx*100)}%" title="${v} emprunts — ${days[i]}"></div>`).join('');
+  document.getElementById('mc-labels').innerHTML=days.map(d=>`<span>${d}</span>`).join('');
+  // top books
+  const top=[{t:'Algorithmique T.1',n:18},{t:'Réseaux & Télécoms',n:15},{t:'BDD relationnelles',n:12}];
+  document.getElementById('top-list').innerHTML=top.map(b=>`<div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span>${b.t}</span><span style="color:var(--ink3)">${b.n}</span></div><div class="gauge"><div class="gauge-fill" style="width:${Math.round(b.n/18*100)}%;background:var(--blue)"></div></div></div>`).join('');
+}
+
+/* ═══════ EMPRUNTS ═══════ */
+function renderEmprunts(data){
+  document.getElementById('emp-tbody').innerHTML=(data||EMPRUNTS).map(e=>{
+    const badge=e.status==='ok'?'b-ok':e.status==='warn'?'b-warn':'b-err';
+    const lbl=e.status==='ok'?'OK':e.status==='warn'?'Bientôt':'Retard';
+    return `<tr><td><span class="av" style="background:${e.avc};color:${e.avt}">${e.av}</span>${e.mem}</td><td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${e.book}</td><td><span class="badge b-pur sm">${e.fil}</span></td><td>${e.date}</td><td><span class="badge ${badge}">${lbl}</span></td><td class="actions"><button class="btn btn-sm"><i class="fa-solid fa-pen"></i></button></td></tr>`;
+  }).join('');
+}
+function filterEmp(q){renderEmprunts(EMPRUNTS.filter(e=>e.mem.toLowerCase().includes(q.toLowerCase())||e.book.toLowerCase().includes(q.toLowerCase())))}
+function filterEmpStatus(s){renderEmprunts(s?EMPRUNTS.filter(e=>(s==='OK'?e.status==='ok':s==='Bientôt'?e.status==='warn':e.status==='err')):EMPRUNTS)}
+function resetEmp(){['e-num','e-nom','e-isbn','e-titre'].forEach(id=>{const el=document.getElementById(id);if(el)el.value=''})}
+function validerEmprunt(){
+  const n=document.getElementById('e-nom').value;
+  if(!n){toast('error','Veuillez identifier un membre valide.');return;}
+  toast('success','Emprunt enregistré pour '+n+' !');resetEmp();
+}
+
+/* ═══════ RETOURS ═══════ */
+function checkRetard(){
+  const num=document.getElementById('r-num').value;
+  const m=MEMBERS.find(x=>x.id.toLowerCase().includes(num.toLowerCase()));
+  const box=document.getElementById('retard-box');
+  if(m&&!m.ok){
+    box.innerHTML=`<div style="background:rgba(232,69,60,.07);border:1px solid rgba(232,69,60,.25);border-radius:var(--r);padding:12px 14px"><div style="font-size:12px;font-weight:700;color:var(--red);margin-bottom:6px"><i class="fa-solid fa-circle-exclamation"></i> Retard détecté</div><div style="font-size:12px;color:var(--ink3)">7 jours de retard — Pénalité applicable : <strong style="color:var(--red)">700 FCFA</strong></div></div>`;
+  } else {box.innerHTML='';}
+}
+function initRetours(){
+  const data=[{h:'08:32',nom:'Sékou Diallo',book:'Architecture réseaux',ret:'0 j',pen:'—'},{h:'09:15',nom:'Afia Mensah',book:'Génie logiciel',ret:'+3 j',pen:'300 FCFA'},{h:'10:47',nom:'Edem Kokou',book:'Probabilités & stats',ret:'0 j',pen:'—'},{h:'11:03',nom:'Nadège Tété',book:'Java avancé',ret:'+7 j',pen:'700 FCFA'}];
+  document.getElementById('ret-tbody').innerHTML=data.map(r=>`<tr><td style="color:var(--ink3);font-size:12px">${r.h}</td><td>${r.nom}</td><td>${r.book}</td><td>${r.ret==='0 j'?'<span style="color:var(--cyan)">—</span>':'<span style="color:var(--red);font-weight:600">'+r.ret+'</span>'}</td><td>${r.pen==='—'?'—':'<span class="badge b-err">'+r.pen+'</span>'}</td></tr>`).join('');
+}
+function validerRetour(){
+  const n=document.getElementById('r-nom').value;
+  if(!n){toast('error','Membre introuvable.');return;}
+  toast('success','Retour enregistré pour '+n+' !');
+  document.getElementById('r-num').value='';document.getElementById('r-nom').value='';document.getElementById('retard-box').innerHTML='';
+}
+
+/* ═══════ CATALOGUE ═══════ */
+function renderCat(data){
+  document.getElementById('cat-tbody').innerHTML=(data||BOOKS).map(b=>`<tr><td style="font-size:11px;color:var(--ink3)">${b.isbn}</td><td style="font-weight:600;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${b.title}</td><td style="color:var(--ink3)">${b.author}</td><td><span class="badge b-pur sm">${b.cat}</span></td><td style="text-align:center;font-size:12px">${b.dispo}/${b.total}</td><td>${b.dispo>0?'<span class="badge b-ok">Disponible</span>':'<span class="badge b-err">Emprunté</span>'}</td><td class="actions"><button class="btn btn-sm"><i class="fa-solid fa-pen"></i></button><button class="btn btn-sm btn-danger"><i class="fa-solid fa-trash"></i></button></td></tr>`).join('');
+}
+function filterCat(){
+  const q=document.getElementById('cat-q').value.toLowerCase();
+  const cat=document.getElementById('cat-cat').value;
+  const d=document.getElementById('cat-dispo').value;
+  renderCat(BOOKS.filter(b=>{
+    const mq=!q||(b.title.toLowerCase().includes(q)||b.author.toLowerCase().includes(q)||b.isbn.includes(q));
+    const mc=!cat||b.cat===cat;
+    const md=d===''?true:d==='1'?b.dispo>0:b.dispo===0;
+    return mq&&mc&&md;
+  }));
+}
+function showAddBook(){toast('warn','Formulaire d\'ajout — disponible dans la prochaine mise à jour.')}
+
+/* ═══════ MEMBRES ═══════ */
+function renderMem(data){
+  document.getElementById('mem-tbody').innerHTML=(data||MEMBERS).map(m=>`<tr><td style="font-size:11px;color:var(--ink3)">${m.id}</td><td><span class="av" style="background:${m.avc};color:${m.avt}">${m.av}</span><strong>${m.name}</strong></td><td>${m.role}</td><td><span class="badge b-info sm">${m.fil}</span></td><td style="text-align:center">${m.emp}</td><td>${m.ok?'<span class="badge b-ok">Actif</span>':'<span class="badge b-err">Pénalité</span>'}</td><td class="actions"><button class="btn btn-sm"><i class="fa-solid fa-pen"></i></button></td></tr>`).join('');
+}
+function filterMem(q){renderMem(q?MEMBERS.filter(m=>m.name.toLowerCase().includes(q.toLowerCase())||m.id.toLowerCase().includes(q.toLowerCase())):null)}
+function filterMemRole(r){renderMem(r?MEMBERS.filter(m=>m.role===r):null)}
+
+/* ═══════ RESERVATIONS ═══════ */
+function renderRes(){
+  const list=document.getElementById('res-list');
+  if(!RESERVATIONS.length){list.innerHTML='<div style="padding:24px;text-align:center;color:var(--ink3);font-size:13px"><i class="fa-solid fa-bookmark" style="font-size:28px;display:block;margin-bottom:8px;opacity:.4"></i>Aucune réservation en attente</div>';return;}
+  list.innerHTML=RESERVATIONS.map((r,i)=>`<div class="res-item"><span style="font-family:\'Syne\',sans-serif;font-size:16px;font-weight:800;color:var(--ink3);min-width:20px">${i+1}</span><div class="res-book-icon"><i class="fa-solid fa-book"></i></div><div style="flex:1;min-width:0"><div style="font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${r.book}</div><div style="font-size:11px;color:var(--ink3)">${r.name} · ${r.date}</div></div><button class="btn btn-sm btn-primary" onclick="confirmRes(${i})"><i class="fa-solid fa-check"></i>Attribuer</button><button class="btn btn-sm btn-danger" style="margin-left:6px" onclick="cancelRes(${i})"><i class="fa-solid fa-xmark"></i></button></div>`).join('');
+  document.getElementById('res-count-badge').textContent=RESERVATIONS.length;
+}
+function filterResBooks(){
+  const q=document.getElementById('rv-b').value.toLowerCase();
+  const box=document.getElementById('rv-results');
+  if(q.length<2){box.innerHTML='';return;}
+  const found=BOOKS.filter(b=>b.title.toLowerCase().includes(q)||b.isbn.includes(q));
+  box.innerHTML=found.length?`<div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden">${found.map(b=>`<div style="padding:9px 14px;font-size:12px;cursor:pointer;border-bottom:1px solid var(--bdr);transition:background .2s;display:flex;justify-content:space-between;align-items:center" onclick="document.getElementById('rv-b').value='${b.title}';document.getElementById('rv-results').innerHTML=''"><span>${b.title} <span style="color:var(--ink3)">(${b.author})</span></span>${b.dispo>0?'<span class="badge b-ok sm">Disponible</span>':'<span class="badge b-err sm">Emprunté</span>'}</div>`).join('')}</div>`:'';
+}
+function addRes(){
+  const m=document.getElementById('rv-m').value,b=document.getElementById('rv-b').value;
+  if(!m||!b){toast('error','Champs obligatoires manquants.');return;}
+  const d=new Date().toLocaleDateString('fr-FR');
+  RESERVATIONS.push({mem:m,name:m,book:b,date:d});
+  renderRes();toast('success','Réservation enregistrée !');
+  document.getElementById('rv-m').value='';document.getElementById('rv-b').value='';
+}
+function confirmRes(i){toast('success','Livre "'+RESERVATIONS[i].book+'" attribué à '+RESERVATIONS[i].name);RESERVATIONS.splice(i,1);renderRes();}
+function cancelRes(i){RESERVATIONS.splice(i,1);renderRes();toast('warn','Réservation annulée.');}
+
+/* ═══════ PENALITES ═══════ */
+function calcPen(){
+  const d1=new Date(document.getElementById('pc-d1').value);
+  const d2=new Date(document.getElementById('pc-d2').value);
+  const bar=parseInt(document.getElementById('pc-bar').value)||100;
+  if(isNaN(d1)||isNaN(d2)){return;}
+  const jours=Math.max(0,Math.round((d2-d1)/(86400000)));
+  const montant=jours*bar;
+  const box=document.getElementById('pen-result-box');
+  const isLate=jours>0;
+  box.style.background=isLate?'rgba(232,69,60,.07)':'rgba(0,201,167,.07)';
+  box.style.border=`1px solid ${isLate?'rgba(232,69,60,.25)':'rgba(0,201,167,.25)'}`;
+  box.style.borderRadius='var(--r)';
+  box.innerHTML=`<div style="font-size:12px;font-weight:700;color:${isLate?'var(--red)':'var(--cyan)'};margin-bottom:10px"><i class="fa-solid ${isLate?'fa-triangle-exclamation':'fa-check-circle'}"></i> ${isLate?'Retard détecté':'Retour dans les délais'}</div>`+
+    ['Jours de retard||'+jours+' jour(s)','Barème appliqué||'+bar+' FCFA/jour','Pénalité totale||'+montant+' FCFA'].map((r,i)=>{const[l,v]=r.split('||');return`<div class="pen-result-row" style="${i===2?'font-size:15px;color:'+(isLate?'var(--red)':'var(--cyan)'):'color:var(--ink3)'}"><span>${l}</span><strong>${v}</strong></div>`}).join('');
+}
+function renderPenalties(){
+  let total=0;
+  document.getElementById('pen-tbody').innerHTML=PENALTIES.map((p,i)=>{
+    if(!p.paid)total+=p.montant;
+    return `<tr style="opacity:${p.paid?.6:1}"><td><span class="av" style="background:${p.avc};color:${p.avt}">${p.av}</span>${p.mem}</td><td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink3)">${p.book}</td><td style="text-align:center"><span class="badge b-err sm">${p.jours}j</span></td><td style="font-weight:700;color:${p.paid?'var(--ink3)':'var(--red)'}">${p.montant} F</td><td>${p.paid?'<span class="badge b-ok">Payé</span>':'<span class="badge b-err">En attente</span>'}</td><td class="actions"><button class="btn btn-sm ${p.paid?'':'btn-success'}" onclick="payPen(${i})">${p.paid?'Annuler':'Encaisser'}</button></td></tr>`;
+  }).join('');
+  document.getElementById('total-pen-badge').textContent='Total : '+total+' FCFA';
+}
+function payPen(i){PENALTIES[i].paid=!PENALTIES[i].paid;renderPenalties();toast(PENALTIES[i].paid?'success':'warn',PENALTIES[i].paid?'Pénalité encaissée.':'Annulé.');}
+function renderBareme(){
+  document.getElementById('bareme-rows').innerHTML=BAREME.map((r,i)=>`<div style="display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--bdr)"><span style="flex:1;font-size:13px;font-weight:500">${r.label}</span><input type="number" value="${r.val}" id="br-${i}" style="width:90px;text-align:right;background:rgba(255,255,255,.06);border:1px solid var(--bdr);border-radius:var(--r);padding:6px 10px;font-size:12px;color:var(--ink);outline:none"><span style="font-size:12px;color:var(--ink3)">FCFA/j</span></div>`).join('');
+}
+function saveBareme(){BAREME.forEach((r,i)=>{const v=document.getElementById('br-'+i);if(v)r.val=parseInt(v.value)||r.val;});toast('success','Barème mis à jour !');}
+
+/* ═══════ STATS ═══════ */
+function initStats(){
+  const days=['Lu','Ma','Me','Je','Ve','Sa','Di'],vals=[18,22,15,27,19,12,8],mx=Math.max(...vals);
+  document.getElementById('stat-chart').innerHTML=vals.map((v,i)=>`<div class="mc-bar" style="height:${Math.round(v/mx*100)}%" title="${v} — ${days[i]}"></div>`).join('');
+  document.getElementById('stat-labels').innerHTML=days.map(d=>`<span>${d}</span>`).join('');
+  const top=[{t:'Algorithmique T.1',n:18},{t:'Réseaux & Télécoms',n:15},{t:'BDD relationnelles',n:12},{t:'Systèmes d\'exploit.',n:10}];
+  document.getElementById('top-books-stat').innerHTML=top.map(b=>`<div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px"><span>${b.t}</span><span style="color:var(--ink3)">${b.n} emp.</span></div><div class="gauge"><div class="gauge-fill" style="width:${Math.round(b.n/18*100)}%;background:var(--blue)"></div></div></div>`).join('');
+  const fil=[{f:'INFO',n:67,pct:54},{f:'SIG',n:29,pct:23},{f:'MATH',n:18,pct:15},{f:'GEO',n:10,pct:8}];
+  document.getElementById('filiere-stat').innerHTML=fil.map(f=>`<div style="display:flex;align-items:center;gap:12px"><span style="font-size:13px;font-weight:600;min-width:44px">${f.f}</span><div class="gauge" style="flex:1"><div class="gauge-fill" style="width:${f.pct}%;background:rgba(151,117,250,.7)"></div></div><span style="font-size:12px;color:var(--ink3);min-width:30px">${f.n}</span></div>`).join('');
+}
+
+/* ═══════ ALERTES ═══════ */
+function initAlertes(){
+  const retards=[{av:'MC',avc:'rgba(232,69,60,.18)',avt:'#E8453C',nom:'Mensah Cédric',book:'Réseaux informatiques',j:7},{av:'AT',avc:'rgba(245,166,35,.18)',avt:'#F5A623',nom:'Adjoua Tanoh',book:'Algorithmique avancée',j:5},{av:'IS',avc:'rgba(151,117,250,.18)',avt:'#B49EFB',nom:'Ibrahim Sall',book:'Bases de données',j:4},{av:'MB',avc:'rgba(0,201,167,.18)',avt:'#00C9A7',nom:'Mariama Bah',book:'Java EE',j:3}];
+  document.getElementById('alerts-list').innerHTML=retards.map((r,i)=>`<div class="alert-item" style="animation:pgIn .3s ${i*.07}s ease backwards"><div class="alert-icon" style="background:rgba(232,69,60,.12);color:var(--red)"><i class="fa-solid fa-triangle-exclamation"></i></div><div class="alert-text"><div class="alert-title">${r.nom} — ${r.book}</div><div class="alert-sub">${r.j} jour(s) de retard</div></div><span class="badge b-err sm">+${r.j}j</span><button class="btn btn-sm" style="margin-left:8px"><i class="fa-solid fa-paper-plane"></i>Relancer</button></div>`).join('');
+  const warns=[{nom:'Ama Boateng',book:'Algorithmique T.1',date:'11/06/2025'},{nom:'Kofi Asante',book:'Cryptographie',date:'11/06/2025'},{nom:'Bintou Diaw',book:'Intelligence artificielle',date:'11/06/2025'}];
+  document.getElementById('warn-list').innerHTML=warns.map((w,i)=>`<div class="alert-item" style="animation:pgIn .3s ${i*.07}s ease backwards"><div class="alert-icon" style="background:rgba(245,166,35,.12);color:var(--amber)"><i class="fa-solid fa-clock"></i></div><div class="alert-text"><div class="alert-title">${w.nom} — ${w.book}</div><div class="alert-sub">Retour prévu le ${w.date}</div></div><button class="btn btn-sm"><i class="fa-solid fa-paper-plane"></i>Rappeler</button></div>`).join('');
+}
+
+/* ═══════ GLOBAL SEARCH ═══════ */
+function globalSearch(q){
+  if(!q){return;}
+  const qL=q.toLowerCase();
+  const book=BOOKS.find(b=>b.title.toLowerCase().includes(qL)||b.isbn.includes(qL));
+  const mem=MEMBERS.find(m=>m.name.toLowerCase().includes(qL)||m.id.toLowerCase().includes(qL));
+  if(book){toast('success','Livre trouvé : '+book.title);goPage('catalogue',null);}
+  else if(mem){toast('success','Membre trouvé : '+mem.name);goPage('membres',null);}
+}
+
+/* ═══════ INIT ALL ═══════ */
+function initAllPages(){
+  initDashboard();renderEmprunts();initRetours();renderCat();renderMem();renderRes();
+  renderPenalties();renderBareme();calcPen();initStats();initAlertes();renderNotifs();
+  toast('success','Bienvenue, '+document.getElementById('sb-name').textContent+' !');
+}
+</script>
+</body>
+</html>

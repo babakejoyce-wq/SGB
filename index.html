@@ -1,0 +1,1053 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SGB — Bibliothèque Universitaire Excellence</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+/* ════════════════════════════════════
+   DESIGN TOKENS
+════════════════════════════════════ */
+:root {
+  --ink:     #0B0F1A;
+  --ink2:    #1E2535;
+  --ink3:    #3A4257;
+  --muted:   #7B8599;
+  --subtle:  #B8C0D2;
+  --ghost:   #EDF0F7;
+  --white:   #FFFFFF;
+  --blue:    #1A6BF5;
+  --blue2:   #0D4CC7;
+  --sky:     #E8F0FF;
+  --cyan:    #00C9A7;
+  --amber:   #F5A623;
+  --red:     #E8453C;
+  --radius:  12px;
+  --radiuslg:20px;
+  --shadow:  0 4px 24px rgba(26,107,245,.10);
+  --shadowlg:0 12px 48px rgba(26,107,245,.16);
+}
+
+/* ════════════════════════════════════
+   RESET + BASE
+════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--ink);
+  color: var(--white);
+  overflow-x: hidden;
+  cursor: default;
+}
+::selection { background: var(--blue); color: #fff; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--ink2); }
+::-webkit-scrollbar-thumb { background: var(--ink3); border-radius: 99px; }
+
+/* ════════════════════════════════════
+   CANVAS BACKGROUND
+════════════════════════════════════ */
+#bg-canvas {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+}
+
+/* ════════════════════════════════════
+   NAVBAR
+════════════════════════════════════ */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 100;
+  padding: 0 48px;
+  height: 68px;
+  display: flex; align-items: center; justify-content: space-between;
+  transition: background .4s, backdrop-filter .4s, border-color .4s;
+  border-bottom: 1px solid transparent;
+}
+nav.scrolled {
+  background: rgba(11,15,26,.82);
+  backdrop-filter: blur(18px);
+  border-color: rgba(255,255,255,.07);
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 12px;
+  text-decoration: none; color: inherit;
+}
+.nav-logo-icon {
+  width: 38px; height: 38px; border-radius: 10px;
+  background: var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; color: #fff;
+  box-shadow: 0 0 20px rgba(26,107,245,.5);
+  flex-shrink: 0;
+}
+.nav-logo-text { font-family: 'Syne', sans-serif; font-size: 18px; font-weight: 800; letter-spacing: -.3px; }
+.nav-links { display: flex; align-items: center; gap: 8px; }
+.nav-link {
+  padding: 8px 16px; border-radius: 8px;
+  font-size: 14px; font-weight: 500; color: var(--subtle);
+  text-decoration: none; cursor: pointer;
+  transition: color .2s, background .2s;
+  border: none; background: none;
+}
+.nav-link:hover { color: var(--white); background: rgba(255,255,255,.06); }
+.nav-cta {
+  padding: 9px 22px; border-radius: 9px;
+  background: var(--blue); color: #fff; font-size: 14px; font-weight: 600;
+  text-decoration: none; cursor: pointer; border: none;
+  box-shadow: 0 0 20px rgba(26,107,245,.35);
+  transition: transform .15s, box-shadow .2s, background .2s;
+  display: flex; align-items: center; gap: 8px;
+}
+.nav-cta:hover { background: var(--blue2); transform: translateY(-1px); box-shadow: 0 4px 28px rgba(26,107,245,.5); }
+.nav-cta:active { transform: scale(.97); }
+
+/* ════════════════════════════════════
+   HERO
+════════════════════════════════════ */
+#hero {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+  padding: 100px 24px 60px;
+  overflow: hidden;
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(26,107,245,.12);
+  border: 1px solid rgba(26,107,245,.3);
+  border-radius: 99px;
+  padding: 6px 16px;
+  font-size: 12px; font-weight: 600; color: #7EB3FF;
+  letter-spacing: .06em; text-transform: uppercase;
+  margin-bottom: 28px;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp .7s .2s ease forwards;
+}
+.hero-eyebrow .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(.8)} }
+
+.hero-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(48px, 8vw, 92px);
+  font-weight: 800; line-height: .95;
+  letter-spacing: -2px;
+  margin-bottom: 24px;
+  opacity: 0; transform: translateY(30px);
+  animation: fadeUp .8s .35s ease forwards;
+}
+.hero-title .line1 { display: block; color: var(--white); }
+.hero-title .line2 {
+  display: block;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--cyan) 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-sub {
+  font-size: clamp(16px, 2.2vw, 20px); font-weight: 400;
+  color: var(--muted); max-width: 560px;
+  line-height: 1.65; margin-bottom: 40px;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp .7s .5s ease forwards;
+}
+.hero-buttons {
+  display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+  margin-bottom: 64px;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp .7s .65s ease forwards;
+}
+.btn-hero-primary {
+  padding: 14px 32px; border-radius: 11px;
+  background: var(--blue); color: #fff;
+  font-size: 15px; font-weight: 600;
+  border: none; cursor: pointer;
+  box-shadow: 0 0 32px rgba(26,107,245,.4);
+  transition: all .2s; display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+.btn-hero-primary:hover { background: var(--blue2); transform: translateY(-2px); box-shadow: 0 6px 36px rgba(26,107,245,.55); }
+.btn-hero-secondary {
+  padding: 14px 32px; border-radius: 11px;
+  background: transparent; color: var(--white);
+  font-size: 15px; font-weight: 600;
+  border: 1px solid rgba(255,255,255,.15); cursor: pointer;
+  transition: all .2s; display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+.btn-hero-secondary:hover { background: rgba(255,255,255,.06); border-color: rgba(255,255,255,.3); transform: translateY(-2px); }
+
+/* Stats floating */
+.hero-stats {
+  display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp .7s .8s ease forwards;
+}
+.stat-pill {
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,.05);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 12px; padding: 12px 20px;
+  backdrop-filter: blur(8px);
+  transition: border-color .2s, background .2s;
+}
+.stat-pill:hover { border-color: rgba(26,107,245,.4); background: rgba(26,107,245,.08); }
+.stat-pill-val { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; color: var(--white); }
+.stat-pill-label { font-size: 11px; color: var(--muted); font-weight: 500; text-align: left; line-height: 1.3; }
+
+/* ── Floating preview card ── */
+.hero-preview {
+  position: relative; margin-top: 72px; width: 100%; max-width: 820px;
+  opacity: 0; transform: translateY(40px) scale(.97);
+  animation: fadeUp .9s 1s ease forwards;
+}
+.preview-browser {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 40px 120px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.05);
+}
+.browser-bar {
+  background: rgba(255,255,255,.06);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  padding: 12px 16px;
+  display: flex; align-items: center; gap: 12px;
+}
+.browser-dots { display: flex; gap: 6px; }
+.browser-dots span {
+  width: 11px; height: 11px; border-radius: 50%;
+}
+.browser-dots .r{background:#FF5F57} .browser-dots .y{background:#FEBC2E} .browser-dots .g{background:#28C840}
+.browser-url {
+  flex: 1; background: rgba(255,255,255,.06); border-radius: 6px;
+  padding: 5px 14px; font-size: 12px; color: var(--muted);
+  display: flex; align-items: center; gap: 6px;
+}
+.browser-url i { font-size: 10px; color: var(--cyan); }
+.browser-content {
+  padding: 20px;
+  display: grid; grid-template-columns: 1fr 2fr;
+  gap: 14px; min-height: 260px;
+}
+.bc-sidebar {
+  background: rgba(255,255,255,.04); border-radius: 10px;
+  padding: 14px; display: flex; flex-direction: column; gap: 6px;
+}
+.bc-nav-item {
+  padding: 8px 10px; border-radius: 7px; font-size: 11px;
+  color: var(--muted); display: flex; align-items: center; gap: 8px;
+  transition: background .2s;
+}
+.bc-nav-item.active { background: rgba(26,107,245,.2); color: #7EB3FF; }
+.bc-nav-item i { font-size: 13px; }
+.bc-main { display: flex; flex-direction: column; gap: 12px; }
+.bc-cards { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+.bc-card {
+  background: rgba(255,255,255,.05); border-radius: 9px;
+  padding: 12px; text-align: center;
+}
+.bc-card .n { font-family: 'Syne',sans-serif; font-size: 20px; font-weight: 800; }
+.bc-card .l { font-size: 9px; color: var(--muted); margin-top: 2px; }
+.bc-table {
+  background: rgba(255,255,255,.04); border-radius: 9px;
+  overflow: hidden; flex: 1;
+}
+.bc-table-row {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 12px; border-bottom: 1px solid rgba(255,255,255,.05);
+  font-size: 10px; color: var(--muted);
+}
+.bc-table-row:last-child { border-bottom: none; }
+.bc-table-row .name { flex: 1; color: var(--white); font-weight: 500; }
+.bc-badge {
+  padding: 2px 8px; border-radius: 99px; font-size: 9px; font-weight: 600;
+}
+.bc-badge.ok { background: rgba(0,201,167,.15); color: #00C9A7; }
+.bc-badge.warn { background: rgba(245,166,35,.15); color: #F5A623; }
+.bc-badge.err { background: rgba(232,69,60,.15); color: #E8453C; }
+
+/* Glow orbs */
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); pointer-events: none; z-index: -1;
+}
+.orb1 { width:500px;height:500px;background:rgba(26,107,245,.18);top:-200px;left:50%;transform:translateX(-50%); }
+.orb2 { width:300px;height:300px;background:rgba(0,201,167,.12);bottom:100px;right:-100px; }
+.orb3 { width:250px;height:250px;background:rgba(26,107,245,.14);bottom:50px;left:-80px; }
+
+/* Floating badges */
+.float-badge {
+  position: absolute;
+  background: rgba(255,255,255,.06);
+  border: 1px solid rgba(255,255,255,.12);
+  border-radius: 10px; padding: 10px 14px;
+  backdrop-filter: blur(12px);
+  font-size: 12px; font-weight: 500;
+  display: flex; align-items: center; gap: 8px;
+  pointer-events: none;
+}
+.float-badge.fb1 { top: 200px; left: -30px; animation: floatY 4s ease-in-out infinite; }
+.float-badge.fb2 { top: 260px; right: -20px; animation: floatY 5s 1s ease-in-out infinite; }
+@keyframes floatY { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-12px)} }
+
+/* ════════════════════════════════════
+   SECTION GÉNÉRIQUE
+════════════════════════════════════ */
+section { position: relative; z-index: 1; }
+.section-eyebrow {
+  font-size: 11px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--blue);
+  margin-bottom: 12px; display: flex; align-items: center; gap: 8px;
+}
+.section-eyebrow::before { content:''; width:24px;height:2px;background:var(--blue);border-radius:99px; }
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(32px,5vw,52px); font-weight: 800;
+  line-height: 1.05; letter-spacing: -1.5px;
+  margin-bottom: 16px;
+}
+.section-sub { font-size: 17px; color: var(--muted); line-height: 1.65; max-width: 520px; }
+.container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+/* ════════════════════════════════════
+   FEATURES STRIP
+════════════════════════════════════ */
+#features { padding: 100px 0; }
+.features-header { text-align: center; margin-bottom: 64px; }
+.features-header .section-sub { margin: 0 auto; }
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3,1fr);
+  gap: 20px;
+}
+.feature-card {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: var(--radiuslg);
+  padding: 28px;
+  transition: border-color .25s, transform .25s, background .25s;
+  cursor: default;
+  opacity: 0; transform: translateY(28px);
+}
+.feature-card.visible { animation: fadeUp .6s ease forwards; }
+.feature-card:hover {
+  border-color: rgba(26,107,245,.4);
+  background: rgba(26,107,245,.05);
+  transform: translateY(-4px);
+}
+.feature-icon {
+  width: 48px; height: 48px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; margin-bottom: 18px;
+}
+.fi-blue  { background:rgba(26,107,245,.15);color:#7EB3FF; }
+.fi-cyan  { background:rgba(0,201,167,.15);color:#00C9A7; }
+.fi-amber { background:rgba(245,166,35,.15);color:#F5A623; }
+.fi-red   { background:rgba(232,69,60,.15);color:#E8453C; }
+.fi-pur   { background:rgba(151,117,250,.15);color:#B49EFB; }
+.fi-green { background:rgba(52,199,89,.15);color:#34C759; }
+.feature-title { font-size: 17px; font-weight: 700; margin-bottom: 10px; line-height: 1.25; }
+.feature-desc { font-size: 14px; color: var(--muted); line-height: 1.65; }
+
+/* ════════════════════════════════════
+   ROLES SECTION
+════════════════════════════════════ */
+#roles { padding: 80px 0; }
+.roles-split { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; }
+.roles-tabs { display: flex; flex-direction: column; gap: 12px; }
+.role-tab {
+  display: flex; align-items: flex-start; gap: 16px;
+  padding: 20px; border-radius: var(--radius);
+  border: 1px solid rgba(255,255,255,.08);
+  cursor: pointer; transition: all .25s;
+  background: rgba(255,255,255,.03);
+}
+.role-tab:hover, .role-tab.active {
+  border-color: rgba(26,107,245,.35);
+  background: rgba(26,107,245,.07);
+}
+.role-tab.active { border-color: var(--blue); }
+.role-icon { width:44px;height:44px;border-radius:10px;background:rgba(26,107,245,.15);color:#7EB3FF;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0; }
+.role-title { font-size:16px;font-weight:700;margin-bottom:4px; }
+.role-desc { font-size:13px;color:var(--muted);line-height:1.6; }
+.roles-visual {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: var(--radiuslg); overflow: hidden;
+  min-height: 340px;
+}
+.rv-header {
+  padding: 16px 20px; border-bottom: 1px solid rgba(255,255,255,.08);
+  display: flex; align-items: center; gap: 10px;
+  background: rgba(255,255,255,.03);
+}
+.rv-avatar { width:32px;height:32px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0; }
+.rv-name { font-size:13px;font-weight:600; }
+.rv-role-label { font-size:11px;color:var(--muted); }
+.rv-content { padding: 16px 20px; display: flex; flex-direction: column; gap: 10px; }
+.rv-action {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; border-radius: 9px;
+  background: rgba(255,255,255,.04); font-size: 12px; color: var(--muted);
+  transition: background .2s;
+}
+.rv-action:hover { background: rgba(255,255,255,.07); }
+.rv-action i { width:28px;height:28px;border-radius:7px;background:rgba(26,107,245,.15);color:#7EB3FF;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0; }
+.rv-action span { flex:1; color: var(--white); font-weight:500; }
+.rv-action .rv-tag { font-size:10px;font-weight:600; }
+
+/* ════════════════════════════════════
+   PROCESSUS (timeline)
+════════════════════════════════════ */
+#process { padding: 100px 0; }
+.process-header { text-align: center; margin-bottom: 64px; }
+.process-steps {
+  display: grid; grid-template-columns: repeat(4,1fr); gap: 0;
+  position: relative;
+}
+.process-steps::before {
+  content:''; position:absolute;
+  top: 40px; left: 12%; right: 12%; height: 2px;
+  background: linear-gradient(90deg, var(--blue), var(--cyan));
+  z-index: 0;
+}
+.step {
+  text-align: center; padding: 0 16px;
+  position: relative; z-index: 1;
+  opacity: 0; transform: translateY(20px);
+}
+.step.visible { animation: fadeUp .6s ease forwards; }
+.step-num {
+  width: 56px; height: 56px; border-radius: 50%;
+  background: var(--ink2); border: 2px solid var(--blue);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800;
+  color: var(--blue); margin: 0 auto 20px;
+  box-shadow: 0 0 24px rgba(26,107,245,.3);
+  transition: background .3s, color .3s;
+}
+.step:hover .step-num { background: var(--blue); color: #fff; }
+.step-title { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.step-desc { font-size: 13px; color: var(--muted); line-height: 1.6; }
+
+/* ════════════════════════════════════
+   STATS SECTION
+════════════════════════════════════ */
+#stats-section { padding: 80px 0; }
+.stats-grid2 { display: grid; grid-template-columns: repeat(4,1fr); gap: 2px; }
+.stat-big {
+  background: rgba(255,255,255,.04);
+  border: 1px solid rgba(255,255,255,.08);
+  padding: 40px 32px; text-align: center;
+  transition: background .2s;
+}
+.stat-big:first-child { border-radius: var(--radius) 0 0 var(--radius); }
+.stat-big:last-child  { border-radius: 0 var(--radius) var(--radius) 0; }
+.stat-big:hover { background: rgba(26,107,245,.07); }
+.stat-big-val {
+  font-family: 'Syne', sans-serif; font-size: 48px; font-weight: 800;
+  background: linear-gradient(135deg, var(--white), var(--blue));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text; margin-bottom: 8px; line-height: 1;
+}
+.stat-big-label { font-size: 14px; color: var(--muted); font-weight: 500; }
+
+/* ════════════════════════════════════
+   CTA SECTION
+════════════════════════════════════ */
+#cta { padding: 100px 0; }
+.cta-card {
+  background: linear-gradient(135deg, rgba(26,107,245,.25) 0%, rgba(0,201,167,.15) 100%);
+  border: 1px solid rgba(26,107,245,.35);
+  border-radius: 24px; padding: 72px 48px;
+  text-align: center; position: relative; overflow: hidden;
+}
+.cta-card::before {
+  content:''; position:absolute; inset:-1px;
+  background: linear-gradient(135deg, rgba(26,107,245,.3), rgba(0,201,167,.2), transparent 60%);
+  border-radius: 24px; z-index:-1;
+}
+.cta-title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(30px, 4.5vw, 52px); font-weight: 800;
+  letter-spacing: -1.5px; margin-bottom: 16px;
+}
+.cta-sub { font-size: 17px; color: var(--muted); margin-bottom: 36px; max-width: 480px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+.cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+/* ════════════════════════════════════
+   FOOTER
+════════════════════════════════════ */
+footer {
+  border-top: 1px solid rgba(255,255,255,.07);
+  padding: 40px 0;
+  z-index: 1; position: relative;
+}
+.footer-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 16px;
+}
+.footer-copy { font-size: 13px; color: var(--muted); }
+.footer-links { display: flex; gap: 24px; }
+.footer-link { font-size: 13px; color: var(--muted); text-decoration: none; transition: color .2s; cursor: pointer; }
+.footer-link:hover { color: var(--white); }
+
+/* ════════════════════════════════════
+   ANIMATIONS UTILITIES
+════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.reveal {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity .7s ease, transform .7s ease;
+}
+.reveal.visible { opacity: 1; transform: translateY(0); }
+
+/* ════════════════════════════════════
+   TICKER (scroll band)
+════════════════════════════════════ */
+.ticker-wrap {
+  overflow: hidden; border-top: 1px solid rgba(255,255,255,.07);
+  border-bottom: 1px solid rgba(255,255,255,.07);
+  padding: 14px 0; background: rgba(255,255,255,.02);
+  position: relative; z-index: 1;
+}
+.ticker {
+  display: flex; gap: 0;
+  animation: ticker 22s linear infinite;
+  width: max-content;
+}
+.ticker-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 0 36px; font-size: 13px; font-weight: 500;
+  color: var(--muted); white-space: nowrap;
+}
+.ticker-item i { color: var(--blue); font-size: 14px; }
+@keyframes ticker { from{transform:translateX(0)} to{transform:translateX(-50%)} }
+
+/* Glow line */
+.glow-line {
+  width: 100%; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--blue), var(--cyan), transparent);
+  opacity: .5; margin: 0;
+}
+
+/* ════════════════════════════════════
+   RESPONSIVE
+════════════════════════════════════ */
+@media (max-width: 900px) {
+  nav { padding: 0 20px; }
+  .nav-links { display: none; }
+  .features-grid { grid-template-columns: 1fr 1fr; }
+  .roles-split { grid-template-columns: 1fr; }
+  .process-steps { grid-template-columns: 1fr 1fr; }
+  .process-steps::before { display: none; }
+  .stats-grid2 { grid-template-columns: 1fr 1fr; }
+  .stat-big { border-radius: 0 !important; }
+  .browser-content { grid-template-columns: 1fr; }
+  .bc-sidebar { display: none; }
+  .float-badge { display: none; }
+}
+@media (max-width: 600px) {
+  .features-grid { grid-template-columns: 1fr; }
+  .stats-grid2 { grid-template-columns: 1fr 1fr; }
+  .bc-cards { grid-template-columns: repeat(2,1fr); }
+  .cta-card { padding: 48px 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ BACKGROUND CANVAS ═══ -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- ═══ NAVBAR ═══ -->
+<nav id="navbar">
+  <a class="nav-logo" href="#">
+    <div class="nav-logo-icon"><i class="fa-solid fa-books"></i></div>
+    <span class="nav-logo-text">SGB</span>
+  </a>
+  <div class="nav-links">
+    <button class="nav-link" onclick="scrollTo('#features')">Fonctionnalités</button>
+    <button class="nav-link" onclick="scrollTo('#roles')">Profils</button>
+    <button class="nav-link" onclick="scrollTo('#process')">Comment ça marche</button>
+    <button class="nav-link" onclick="scrollTo('#stats-section')">Chiffres</button>
+  </div>
+  <a href="app.html" class="nav-cta"><i class="fa-solid fa-arrow-right-to-bracket"></i>Accéder à l'application</a>
+</nav>
+
+<!-- ═══ HERO ═══ -->
+<section id="hero">
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <!-- floating badges -->
+  <div class="float-badge fb1">
+    <i class="fa-solid fa-book" style="color:#7EB3FF"></i>
+    <span style="font-size:11px;color:#aaa">342 livres indexés</span>
+  </div>
+  <div class="float-badge fb2">
+    <i class="fa-solid fa-check-circle" style="color:#00C9A7"></i>
+    <span style="font-size:11px;color:#aaa">Retour enregistré</span>
+  </div>
+
+  <div class="hero-eyebrow">
+    <span class="dot"></span>
+    Université Excellence · SGB v1.0
+  </div>
+
+  <h1 class="hero-title">
+    <span class="line1">La bibliothèque</span>
+    <span class="line2">réinventée.</span>
+  </h1>
+
+  <p class="hero-sub">
+    Gérez emprunts, retours, pénalités et catalogue en quelques clics. Zéro paperasse. Données en temps réel.
+  </p>
+
+  <div class="hero-buttons">
+    <a href="app.html" class="btn-hero-primary">
+      <i class="fa-solid fa-play"></i> Lancer l'application
+    </a>
+    <a href="#features" class="btn-hero-secondary" onclick="event.preventDefault();document.getElementById('features').scrollIntoView({behavior:'smooth'})">
+      <i class="fa-solid fa-circle-info"></i> Découvrir
+    </a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="stat-pill">
+      <div>
+        <div class="stat-pill-val" id="c1">0</div>
+        <div class="stat-pill-label">Livres<br>en stock</div>
+      </div>
+    </div>
+    <div class="stat-pill">
+      <div>
+        <div class="stat-pill-val" id="c2">0</div>
+        <div class="stat-pill-label">Membres<br>inscrits</div>
+      </div>
+    </div>
+    <div class="stat-pill">
+      <div>
+        <div class="stat-pill-val" id="c3">0</div>
+        <div class="stat-pill-label">Emprunts<br>ce mois</div>
+      </div>
+    </div>
+    <div class="stat-pill">
+      <div>
+        <div class="stat-pill-val" id="c4">0</div>
+        <div class="stat-pill-label">Retours<br>aujourd'hui</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Browser preview -->
+  <div class="hero-preview">
+    <div class="preview-browser">
+      <div class="browser-bar">
+        <div class="browser-dots"><span class="r"></span><span class="y"></span><span class="g"></span></div>
+        <div class="browser-url">
+          <i class="fa-solid fa-lock"></i>
+          sgb.univ-excellence.tg/dashboard
+        </div>
+      </div>
+      <div class="browser-content">
+        <div class="bc-sidebar">
+          <div class="bc-nav-item active"><i class="fa-solid fa-chart-pie"></i> Tableau de bord</div>
+          <div class="bc-nav-item"><i class="fa-solid fa-book-open"></i> Emprunts</div>
+          <div class="bc-nav-item"><i class="fa-solid fa-rotate-left"></i> Retours</div>
+          <div class="bc-nav-item"><i class="fa-solid fa-books"></i> Catalogue</div>
+          <div class="bc-nav-item"><i class="fa-solid fa-users"></i> Membres</div>
+          <div class="bc-nav-item"><i class="fa-solid fa-chart-bar"></i> Rapports</div>
+        </div>
+        <div class="bc-main">
+          <div class="bc-cards">
+            <div class="bc-card"><div class="n" style="color:#7EB3FF">342</div><div class="l">Livres</div></div>
+            <div class="bc-card"><div class="n" style="color:#F5A623">47</div><div class="l">Emprunts</div></div>
+            <div class="bc-card"><div class="n" style="color:#E8453C">12</div><div class="l">Retards</div></div>
+            <div class="bc-card"><div class="n" style="color:#00C9A7">8</div><div class="l">Retours</div></div>
+          </div>
+          <div class="bc-table">
+            <div class="bc-table-row" style="background:rgba(255,255,255,.04);font-size:9px;color:#555;">
+              <span class="name">MEMBRE</span><span>LIVRE</span><span style="margin-left:auto">STATUT</span>
+            </div>
+            <div class="bc-table-row"><span class="name">Koffi A.</span><span>Intro aux BDD</span><span class="bc-badge ok" style="margin-left:auto">OK</span></div>
+            <div class="bc-table-row"><span class="name">Ama B.</span><span>Algorithmique</span><span class="bc-badge warn" style="margin-left:auto">Bientôt</span></div>
+            <div class="bc-table-row"><span class="name">Mensah C.</span><span>Réseaux info</span><span class="bc-badge err" style="margin-left:auto">Retard</span></div>
+            <div class="bc-table-row"><span class="name">Fatima T.</span><span>Mathématiques</span><span class="bc-badge ok" style="margin-left:auto">OK</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ TICKER ═══ -->
+<div class="ticker-wrap">
+  <div class="ticker" id="ticker"></div>
+</div>
+<div class="glow-line"></div>
+
+<!-- ═══ FEATURES ═══ -->
+<section id="features">
+  <div class="container">
+    <div class="features-header reveal">
+      <div class="section-eyebrow" style="justify-content:center">Fonctionnalités</div>
+      <h2 class="section-title" style="text-align:center">Tout ce qu'il vous faut,<br>au même endroit.</h2>
+      <p class="section-sub" style="text-align:center">Du simple emprunt à la génération de rapports PDF — le SGB couvre l'intégralité du cycle documentaire universitaire.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon fi-blue"><i class="fa-solid fa-book-open-reader"></i></div>
+        <div class="feature-title">Gestion des emprunts</div>
+        <div class="feature-desc">Enregistrement en moins de 30 secondes, lecture QR, vérification automatique des éligibilités et du quota.</div>
+      </div>
+      <div class="feature-card" style="animation-delay:.08s">
+        <div class="feature-icon fi-cyan"><i class="fa-solid fa-rotate-left"></i></div>
+        <div class="feature-title">Retours & pénalités</div>
+        <div class="feature-desc">Calcul automatique des jours de retard, application du barème configurable, historique complet des paiements.</div>
+      </div>
+      <div class="feature-card" style="animation-delay:.16s">
+        <div class="feature-icon fi-amber"><i class="fa-solid fa-magnifying-glass"></i></div>
+        <div class="feature-title">Catalogue intelligent</div>
+        <div class="feature-desc">Recherche plein texte par titre, auteur ou ISBN. Filtres combinables, statut en temps réel, réservation intégrée.</div>
+      </div>
+      <div class="feature-card" style="animation-delay:.24s">
+        <div class="feature-icon fi-pur"><i class="fa-solid fa-bookmark"></i></div>
+        <div class="feature-title">Réservations</div>
+        <div class="feature-desc">File d'attente numérotée pour les livres empruntés. Notification automatique dès la disponibilité.</div>
+      </div>
+      <div class="feature-card" style="animation-delay:.32s">
+        <div class="feature-icon fi-red"><i class="fa-solid fa-chart-line"></i></div>
+        <div class="feature-title">Rapports & statistiques</div>
+        <div class="feature-desc">Tableaux de bord temps réel, graphiques interactifs, export PDF/Excel en un clic pour la direction.</div>
+      </div>
+      <div class="feature-card" style="animation-delay:.4s">
+        <div class="feature-icon fi-green"><i class="fa-solid fa-shield-halved"></i></div>
+        <div class="feature-title">Sécurité & rôles</div>
+        <div class="feature-desc">Authentification bcrypt, gestion fine des permissions par profil, connexion HTTPS, sauvegarde quotidienne.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PROCESS ═══ -->
+<section id="process">
+  <div class="container">
+    <div class="process-header reveal">
+      <div class="section-eyebrow" style="justify-content:center">Comment ça marche</div>
+      <h2 class="section-title" style="text-align:center">Un emprunt en 4 étapes.</h2>
+    </div>
+    <div class="process-steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-title">Identifier le membre</div>
+        <div class="step-desc">Saisie du numéro étudiant ou scan de la carte. Le profil se remplit automatiquement.</div>
+      </div>
+      <div class="step" style="animation-delay:.1s">
+        <div class="step-num">2</div>
+        <div class="step-title">Scanner le livre</div>
+        <div class="step-desc">Code QR ou ISBN — le titre, l'auteur et la disponibilité s'affichent instantanément.</div>
+      </div>
+      <div class="step" style="animation-delay:.2s">
+        <div class="step-num">3</div>
+        <div class="step-title">Valider</div>
+        <div class="step-desc">Un clic confirme l'emprunt. Date de retour calculée selon le profil. Alerte J−2 planifiée.</div>
+      </div>
+      <div class="step" style="animation-delay:.3s">
+        <div class="step-num">4</div>
+        <div class="step-title">Suivre en temps réel</div>
+        <div class="step-desc">Le tableau de bord se met à jour immédiatement. Retards détectés et signalés automatiquement.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ROLES ═══ -->
+<section id="roles">
+  <div class="container">
+    <div class="roles-split">
+      <div>
+        <div class="section-eyebrow reveal">Profils utilisateurs</div>
+        <h2 class="section-title reveal">Conçu pour<br>chaque acteur.</h2>
+        <p class="section-sub reveal" style="margin-bottom:32px">Trois niveaux d'accès pensés pour correspondre aux vrais besoins de chaque rôle à l'université.</p>
+        <div class="roles-tabs">
+          <div class="role-tab active" onclick="setRole(this,'Bibliothécaire','MD','Accès complet : livres, emprunts, retours, pénalités, membres.')">
+            <div class="role-icon"><i class="fa-solid fa-id-badge"></i></div>
+            <div>
+              <div class="role-title">Bibliothécaire</div>
+              <div class="role-desc">Gestion complète du cycle documentaire. Enregistrement des opérations quotidiennes.</div>
+            </div>
+          </div>
+          <div class="role-tab" onclick="setRole(this,'Administrateur','AD','Configuration système, gestion des utilisateurs, rapports globaux.')">
+            <div class="role-icon"><i class="fa-solid fa-shield"></i></div>
+            <div>
+              <div class="role-title">Administrateur</div>
+              <div class="role-desc">Configuration système, gestion des utilisateurs, statistiques globales et exports.</div>
+            </div>
+          </div>
+          <div class="role-tab" onclick="setRole(this,'Étudiant','ET','Consultation du catalogue, historique personnel, réservations.')">
+            <div class="role-icon"><i class="fa-solid fa-user-graduate"></i></div>
+            <div>
+              <div class="role-title">Étudiant / Enseignant</div>
+              <div class="role-desc">Consultation du catalogue 24h/24, historique personnel, réservation d'ouvrages.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="roles-visual" id="roles-visual">
+        <div class="rv-header">
+          <div class="rv-avatar" id="rv-av">MD</div>
+          <div>
+            <div class="rv-name" id="rv-name">Marie Dupont</div>
+            <div class="rv-role-label" id="rv-role">Bibliothécaire</div>
+          </div>
+          <span class="bc-badge ok" style="margin-left:auto;font-size:10px">En ligne</span>
+        </div>
+        <div class="rv-content" id="rv-content">
+          <div class="rv-action"><i class="fa-solid fa-book-open-reader"></i><span>Enregistrer un emprunt</span><span class="rv-tag" style="color:#7EB3FF">→</span></div>
+          <div class="rv-action"><i class="fa-solid fa-rotate-left"></i><span>Enregistrer un retour</span><span class="rv-tag" style="color:#7EB3FF">→</span></div>
+          <div class="rv-action"><i class="fa-solid fa-magnifying-glass"></i><span>Rechercher dans le catalogue</span><span class="rv-tag" style="color:#7EB3FF">→</span></div>
+          <div class="rv-action"><i class="fa-solid fa-cash-register"></i><span>Encaisser une pénalité</span><span class="rv-tag" style="color:#7EB3FF">→</span></div>
+          <div class="rv-action"><i class="fa-solid fa-bell"></i><span>Voir les alertes (12)</span><span class="rv-tag bc-badge err" style="font-size:9px">12</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STATS BIG ═══ -->
+<section id="stats-section">
+  <div class="glow-line" style="opacity:.3"></div>
+  <div class="stats-grid2 reveal">
+    <div class="stat-big"><div class="stat-big-val">−97%</div><div class="stat-big-label">de temps de traitement</div></div>
+    <div class="stat-big"><div class="stat-big-val">24/7</div><div class="stat-big-label">accès au catalogue</div></div>
+    <div class="stat-big"><div class="stat-big-val">0</div><div class="stat-big-label">fiche papier perdue</div></div>
+    <div class="stat-big"><div class="stat-big-val">100%</div><div class="stat-big-label">traçabilité documentaire</div></div>
+  </div>
+  <div class="glow-line" style="opacity:.3"></div>
+</section>
+
+<!-- ═══ CTA ═══ -->
+<section id="cta">
+  <div class="container">
+    <div class="cta-card reveal">
+      <div class="hero-eyebrow" style="justify-content:center;margin-bottom:24px">
+        <span class="dot"></span> Prêt à démarrer
+      </div>
+      <h2 class="cta-title">Modernisez votre bibliothèque<br>aujourd'hui.</h2>
+      <p class="cta-sub">Rejoignez l'Université Excellence dans sa transformation numérique. Le SGB est opérationnel en moins d'une journée.</p>
+      <div class="cta-buttons">
+        <a href="app.html" class="btn-hero-primary" style="text-decoration:none">
+          <i class="fa-solid fa-rocket"></i> Accéder à l'application
+        </a>
+        <a href="#" class="btn-hero-secondary" style="text-decoration:none">
+          <i class="fa-solid fa-file-pdf"></i> Télécharger le cahier des charges
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══ -->
+<footer>
+  <div class="container">
+    <div class="footer-inner">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="nav-logo-icon" style="width:30px;height:30px;font-size:14px;border-radius:8px"><i class="fa-solid fa-books"></i></div>
+        <span class="footer-copy">SGB · Université Excellence · v1.0 · 2025</span>
+      </div>
+      <div class="footer-links">
+        <a class="footer-link">Documentation</a>
+        <a class="footer-link">Support</a>
+        <a class="footer-link" href="app.html">Application</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══ SCRIPTS ═══ -->
+<script>
+/* ── Particles canvas ── */
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, particles = [];
+  function resize(){ W = canvas.width = innerWidth; H = canvas.height = innerHeight; }
+  resize(); window.addEventListener('resize', resize);
+  class P {
+    constructor(){
+      this.x = Math.random()*W;
+      this.y = Math.random()*H;
+      this.r = Math.random()*1.6+.4;
+      this.vx = (Math.random()-.5)*.3;
+      this.vy = (Math.random()-.5)*.3;
+      this.o = Math.random()*.5+.15;
+    }
+    update(){ this.x+=this.vx; this.y+=this.vy; if(this.x<0||this.x>W)this.vx*=-1; if(this.y<0||this.y>H)this.vy*=-1; }
+    draw(){
+      ctx.beginPath();
+      ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(100,160,255,${this.o})`;
+      ctx.fill();
+    }
+  }
+  for(let i=0;i<90;i++) particles.push(new P());
+
+  let mx=W/2,my=H/2;
+  window.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY});
+
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    // connections
+    for(let i=0;i<particles.length;i++){
+      for(let j=i+1;j<particles.length;j++){
+        const dx=particles[i].x-particles[j].x, dy=particles[i].y-particles[j].y;
+        const d=Math.sqrt(dx*dx+dy*dy);
+        if(d<110){
+          ctx.beginPath();
+          ctx.moveTo(particles[i].x,particles[i].y);
+          ctx.lineTo(particles[j].x,particles[j].y);
+          ctx.strokeStyle=`rgba(26,107,245,${.08*(1-d/110)})`;
+          ctx.lineWidth=.5;
+          ctx.stroke();
+        }
+      }
+    }
+    particles.forEach(p=>{p.update();p.draw();});
+    requestAnimationFrame(draw);
+  }
+  draw();
+})();
+
+/* ── Navbar scroll ── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('navbar').classList.toggle('scrolled', scrollY > 30);
+});
+
+/* ── Counter animation ── */
+function animCount(el, target, suffix=''){
+  let cur=0; const step=Math.ceil(target/60);
+  const iv=setInterval(()=>{
+    cur=Math.min(cur+step,target);
+    el.textContent=cur+suffix;
+    if(cur>=target) clearInterval(iv);
+  },18);
+}
+setTimeout(()=>{
+  animCount(document.getElementById('c1'),342);
+  animCount(document.getElementById('c2'),312);
+  animCount(document.getElementById('c3'),124);
+  animCount(document.getElementById('c4'),8);
+},900);
+
+/* ── Intersection observer for reveals ── */
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      io.unobserve(e.target);
+    }
+  });
+},{threshold:.15});
+document.querySelectorAll('.reveal,.feature-card,.step').forEach(el=>io.observe(el));
+
+/* ── Feature cards stagger ── */
+const io2 = new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{
+    if(e.isIntersecting){
+      setTimeout(()=>e.target.classList.add('visible'), i*80);
+      io2.unobserve(e.target);
+    }
+  });
+},{threshold:.1});
+document.querySelectorAll('.feature-card').forEach(el=>io2.observe(el));
+
+/* ── Roles tab ── */
+const roleActions = {
+  'Bibliothécaire': [
+    ['fa-book-open-reader','Enregistrer un emprunt','→','#7EB3FF'],
+    ['fa-rotate-left','Enregistrer un retour','→','#7EB3FF'],
+    ['fa-magnifying-glass','Rechercher dans le catalogue','→','#7EB3FF'],
+    ['fa-cash-register','Encaisser une pénalité','→','#7EB3FF'],
+    ['fa-bell','Voir les alertes (12)','12','#E8453C'],
+  ],
+  'Administrateur': [
+    ['fa-users-gear','Gérer les utilisateurs','→','#7EB3FF'],
+    ['fa-sliders','Configurer les paramètres','→','#7EB3FF'],
+    ['fa-chart-bar','Consulter les rapports','→','#7EB3FF'],
+    ['fa-database','Lancer une sauvegarde','→','#7EB3FF'],
+    ['fa-file-export','Exporter en PDF/Excel','→','#7EB3FF'],
+  ],
+  'Étudiant': [
+    ['fa-magnifying-glass','Rechercher un livre','→','#7EB3FF'],
+    ['fa-bookmark','Réserver un ouvrage','→','#7EB3FF'],
+    ['fa-clock-rotate-left','Mon historique d\'emprunts','→','#7EB3FF'],
+    ['fa-triangle-exclamation','Mes pénalités en cours','→','#F5A623'],
+    ['fa-user','Mon profil','→','#7EB3FF'],
+  ],
+};
+const roleNames = {'Bibliothécaire':'Marie Dupont','Administrateur':'Admin Système','Étudiant':'Koffi Amouzou'};
+const roleAv = {'Bibliothécaire':'MD','Administrateur':'AD','Étudiant':'KA'};
+
+function setRole(el, role, av, desc){
+  document.querySelectorAll('.role-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('rv-av').textContent = roleAv[role]||av;
+  document.getElementById('rv-name').textContent = roleNames[role]||role;
+  document.getElementById('rv-role').textContent = role;
+  const actions = roleActions[role]||[];
+  document.getElementById('rv-content').innerHTML = actions.map(([ico,label,tag,tagC])=>`
+    <div class="rv-action">
+      <i class="fa-solid ${ico}"></i>
+      <span>${label}</span>
+      <span class="rv-tag" style="color:${tagC};font-size:10px">${tag}</span>
+    </div>
+  `).join('');
+}
+
+/* ── Ticker ── */
+const tickerItems = [
+  'Gestion des emprunts',
+  'Catalogue numérique',
+  'Calcul automatique des pénalités',
+  'Réservations en ligne',
+  'Rapports PDF/Excel',
+  'Alertes de retard',
+  'Accès 24h/24',
+  'Sécurité renforcée',
+  'Sauvegarde quotidienne',
+  'Interface responsive',
+];
+const ticker = document.getElementById('ticker');
+const html = tickerItems.map(t=>`<span class="ticker-item"><i class="fa-solid fa-circle-dot"></i>${t}</span>`).join('');
+ticker.innerHTML = html+html; // duplicate for seamless loop
+
+/* ── Scroll helper ── */
+function scrollTo(sel){
+  const el=document.querySelector(sel);
+  if(el) el.scrollIntoView({behavior:'smooth'});
+}
+</script>
+
+</body>
+</html>
